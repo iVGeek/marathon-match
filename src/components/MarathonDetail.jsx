@@ -71,8 +71,8 @@ export default function MarathonDetail({ projection, onBack }) {
         <div className="detail-title-row">
           <span className="course-dot large" style={{ background: p.color }} />
           <div>
-            <h2 className="detail-title">{p.courseName} {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" /> : ''}</h2>
-            <p className="detail-location">{p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" /> : ''} {p.location} {p.country ? '(' + countryName(p.country) + ')' : ''}</p>
+            <h2 className="detail-title">{p.courseName} {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" onError={(e) => { e.target.style.display='none' }} /> : ''}</h2>
+            <p className="detail-location">{p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" onError={(e) => { e.target.style.display='none' }} /> : ''} {p.location} {p.country ? '(' + countryName(p.country) + ')' : ''}</p>
           </div>
         </div>
         <div className="detail-summary">
@@ -143,7 +143,7 @@ export default function MarathonDetail({ projection, onBack }) {
 
           {rank && (
             <div className="ranking-info">
-              <div className="ranking-header">Race Ranking Estimate — {p.courseName} {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" /> : ''}</div>
+              <div className="ranking-header">Race Ranking Estimate — {p.courseName} {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" onError={(e) => { e.target.style.display='none' }} /> : ''}</div>
               <div className="ranking-details">
                 <div className="ranking-stat">
                   <span className="ranking-label">Projected Position</span>

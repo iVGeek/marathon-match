@@ -9,7 +9,7 @@ const countryNames = {
 
 export function countryFlag(code) {
   if (!code) return null;
-  return `https://flagcdn.com/16x12/${code.toLowerCase()}.png`;
+  return `https://cdn.jsdelivr.net/gh/lipis/flag-icons@main/flags/4x3/${code.toLowerCase()}.svg`;
 }
 
 export function countryName(code) {
