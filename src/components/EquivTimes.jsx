@@ -16,10 +16,10 @@ function makeFlatCourse(dist) {
   };
 }
 
-export default function EquivTimes({ activity }) {
+export default function EquivTimes({ activity, analysis }) {
   const equivs = standardDistances.map((dist) => {
     const course = makeFlatCourse(dist);
-    const result = projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course, activity.averageTemp || null);
+    const result = projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course, activity.averageTemp || null, analysis);
     return result;
   });
 

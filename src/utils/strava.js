@@ -46,8 +46,8 @@ export async function fetchActivities(token, page = 1, perPage = 30) {
   return res.json();
 }
 
-export async function fetchActivity(token, activityId) {
-  const url = `https://www.strava.com/api/v3/activities/${activityId}`;
+export async function fetchActivityDetail(token, activityId) {
+  const url = `https://www.strava.com/api/v3/activities/${activityId}?include_all_efforts=false`;
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -69,9 +69,32 @@ export function parseActivityStats(activity) {
     elevationGain: activity.total_elevation_gain || 0,
     startDate: activity.start_date,
     averageSpeed: activity.average_speed,
-    averageTemp: activity.average_temp,
     averageHeartrate: activity.average_heartrate,
     maxHeartrate: activity.max_heartrate,
+    averageTemp: activity.average_temp,
+    averageCadence: activity.average_cadence,
+    elevHigh: activity.elev_high,
+    elevLow: activity.elev_low,
+  };
+}
+
+export function parseActivityDetail(raw) {
+  const base = parseActivityStats(raw);
+  return {
+    ...base,
+    splits: (raw.splits_metric || []).map(s => ({
+      distance: s.distance,
+      movingTime: s.moving_time,
+      elapsedTime: s.elapsed_time,
+      averageSpeed: s.average_speed,
+      elevationDiff: s.elevation_difference,
+      averageGradeAdjustedSpeed: s.average_grade_adjusted_speed,
+      averageHeartrate: s.average_heartrate,
+      averageCadence: s.average_cadence,
+      split: s.split,
+    })),
+    gradeAdjustedDistance: raw.grade_adjusted_distance,
+    averageGradeAdjustedSpeed: raw.average_grade_adjusted_speed,
   };
 }
 

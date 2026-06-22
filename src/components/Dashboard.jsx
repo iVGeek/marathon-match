@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchActivities, isRunningActivity, parseActivityStats, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
+import { fetchActivities, fetchActivityDetail, isRunningActivity, parseActivityStats, parseActivityDetail, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
+import { analyzeSplits } from '../utils/paceAnalysis';
 import ActivitySelector from './ActivitySelector';
 import ManualInput from './ManualInput';
+import PaceAnalysis from './PaceAnalysis';
 import EquivTimes from './EquivTimes';
 import MarathonGrid from './MarathonGrid';
 import MarathonDetail from './MarathonDetail';
@@ -12,9 +14,11 @@ import { allCourses } from '../utils/marathonData';
 export default function Dashboard({ token, athlete, onLogout, config }) {
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const [paceAnalysis, setPaceAnalysis] = useState(null);
   const [projections, setProjections] = useState([]);
   const [selectedProjection, setSelectedProjection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentToken, setCurrentToken] = useState(token);
   const [inputMode, setInputMode] = useState('strava');
@@ -59,16 +63,55 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
     })();
   }, [currentToken, ensureValidToken]);
 
-  const handleSelectActivity = useCallback((activity) => {
+  const handleSelectActivity = useCallback(async (activity) => {
     setSelectedActivity(activity);
     setSelectedProjection(null);
-    const userTemp = activity.averageTemp || null;
+    setPaceAnalysis(null);
+    setProjections([]);
+
+    let effectiveActivity = activity;
+    let analysis = null;
+
+    if (!activity.isManual) {
+      setDetailLoading(true);
+      try {
+        const accessToken = await ensureValidToken(currentToken);
+        if (accessToken) {
+          const detail = await fetchActivityDetail(accessToken, activity.id);
+          const parsed = parseActivityDetail(detail);
+          effectiveActivity = parsed;
+
+          if (parsed.splits && parsed.splits.length > 0) {
+            analysis = analyzeSplits(parsed.splits, parsed.averageHeartrate, parsed.maxHeartrate);
+            if (analysis && parsed.splits) {
+              analysis._rawSplits = parsed.splits;
+            }
+          }
+        }
+      } catch {
+        /* detail fetch is optional, fall back to list data */
+      } finally {
+        setDetailLoading(false);
+      }
+    }
+
+    setPaceAnalysis(analysis);
+    setSelectedActivity(effectiveActivity);
+
+    const userTemp = effectiveActivity.averageTemp || null;
     const results = allCourses.map((course) =>
-      projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course, userTemp)
+      projectRun(
+        effectiveActivity.distanceKm,
+        effectiveActivity.movingTimeSec,
+        effectiveActivity.elevationGain,
+        course,
+        userTemp,
+        analysis
+      )
     );
     results.sort((a, b) => a.projectedTimeSec - b.projectedTimeSec);
     setProjections(results);
-  }, []);
+  }, [currentToken, ensureValidToken]);
 
   const handleSelectProjection = useCallback((proj) => {
     setSelectedProjection(proj);
@@ -139,7 +182,18 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
 
           {selectedActivity && (
             <>
-              <EquivTimes activity={selectedActivity} />
+              {detailLoading && (
+                <div className="section">
+                  <div className="loading-activities">
+                    <div className="spinner" />
+                    <span>Loading detailed splits and analysis...</span>
+                  </div>
+                </div>
+              )}
+
+              {paceAnalysis && <PaceAnalysis analysis={paceAnalysis} />}
+
+              <EquivTimes activity={selectedActivity} analysis={paceAnalysis} />
               {projections.length > 0 && (
                 <MarathonGrid
                   projections={projections}

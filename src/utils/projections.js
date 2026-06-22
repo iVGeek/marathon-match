@@ -1,4 +1,5 @@
 import { tempAdjustment, getWeather } from './weather';
+import { fadeEnduranceFactor } from './paceAnalysis';
 
 const RIEGEL_EXPONENT = 1.06;
 
@@ -52,14 +53,19 @@ function formatPace(secondsPerKm) {
   return paceDisplay(secondsPerKm);
 }
 
-function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse, userTempC) {
-  const userPace = runDurationSec / runDistanceKm;
-  const userElevPerKm = runElevationGain / runDistanceKm;
+function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse, userTempC, paceAnalysis) {
+  const rawPace = runDurationSec / runDistanceKm;
 
-  const baseProjectedSec = riegelProjection(runDurationSec, runDistanceKm, targetCourse.distanceKm);
+  const effectivePace = (paceAnalysis && paceAnalysis.hasGAP && paceAnalysis.avgGAPSec)
+    ? paceAnalysis.avgGAPSec
+    : rawPace;
+
+  const effectiveDuration = effectivePace * runDistanceKm;
+
+  const baseProjectedSec = riegelProjection(effectiveDuration, runDistanceKm, targetCourse.distanceKm);
 
   const elevFactor = elevationFactor(
-    userElevPerKm,
+    runElevationGain / runDistanceKm,
     targetCourse.elevationGain / targetCourse.distanceKm,
     targetCourse.difficulty
   );
@@ -72,7 +78,11 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     ? tempAdjustment(userTempC, courseWeather.tempC)
     : 1;
 
-  const projectedTime = baseProjectedSec * elevFactor * endurance * weatherFactor;
+  const fadeFactor = paceAnalysis
+    ? fadeEnduranceFactor(paceAnalysis.paceFadePct, runDistanceKm, targetCourse.distanceKm)
+    : 1;
+
+  const projectedTime = baseProjectedSec * elevFactor * endurance * weatherFactor * fadeFactor;
   const projectedPace = projectedTime / targetCourse.distanceKm;
 
   return {
@@ -89,17 +99,21 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     projectedTime: timeDisplay(projectedTime),
     projectedPace: paceDisplay(projectedPace),
     projectedPaceSec: projectedPace,
-    userPace: paceDisplay(userPace),
-    userPaceSec: userPace,
+    userPace: paceDisplay(rawPace),
+    userPaceSec: rawPace,
+    userGAP: paceAnalysis && paceAnalysis.avgGAPDisplay ? paceAnalysis.avgGAPDisplay : null,
+    userGAPSec: paceAnalysis && paceAnalysis.avgGAPSec ? paceAnalysis.avgGAPSec : null,
     userDistance: runDistanceKm,
     userDuration: runDurationSec,
     userElevation: runElevationGain,
     adjustmentFactor: elevFactor,
     endurancePenalty: endurance,
     relevance,
-    userTemperature: userTempC,
     weatherFactor,
     courseWeather,
+    userTemperature: userTempC,
+    fadeFactor,
+    paceFadePct: paceAnalysis ? paceAnalysis.paceFadePct : null,
   };
 }
 

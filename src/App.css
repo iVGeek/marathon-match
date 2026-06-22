@@ -1159,6 +1159,104 @@ body {
   border-radius: 6px;
 }
 
+/* Pace Analysis */
+.pa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pa-card {
+  padding: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.pa-card.highlight {
+  border-color: rgba(252, 76, 2, 0.3);
+  background: rgba(252, 76, 2, 0.03);
+}
+
+.pa-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.pa-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.pa-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.split-chart-container {
+  margin-top: 20px;
+}
+
+.split-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.split-chart {
+  position: relative;
+}
+
+.split-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 100px;
+}
+
+.split-bar-group {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 8px;
+}
+
+.split-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+  transition: opacity 0.15s;
+}
+
+.split-bar-group:hover .split-bar {
+  opacity: 1 !important;
+}
+
+.split-labels {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.split-labels .split-label {
+  flex: 1;
+  font-size: 8px;
+  color: var(--text-muted);
+  text-align: center;
+  min-width: 8px;
+}
+
 /* Elevation Chart */
 .elevation-chart {
   margin: 16px 0;
