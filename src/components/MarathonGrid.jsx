@@ -105,7 +105,7 @@ export default function MarathonGrid({ projections, onSelect }) {
               <span className="grid-cell course">
                 <span className="course-dot" style={{ background: p.color }} />
                 <span className="course-name">{p.courseName}</span>
-                {p.country ? <span className="course-flag">{countryFlag(p.country)}</span> : null}
+                {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" /> : null}
               </span>
               <span className="grid-cell dist">{p.distanceKm} km</span>
               <span className="grid-cell time">{p.projectedTime}</span>

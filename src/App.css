@@ -164,9 +164,11 @@ body {
 
 .course-flag {
   margin-left: 6px;
-  font-size: 20px;
-  line-height: 1;
+  width: 20px;
+  height: 15px;
   vertical-align: middle;
+  border-radius: 2px;
+  display: inline-block;
 }
 
 .grid-cell.rank {

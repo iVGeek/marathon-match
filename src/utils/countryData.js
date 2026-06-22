@@ -1,10 +1,3 @@
-const countryFlags = {
-  DE: '🇩🇪', US: '🇺🇸', GB: '🇬🇧', JP: '🇯🇵', FR: '🇫🇷',
-  NL: '🇳🇱', IT: '🇮🇹', ES: '🇪🇸', CZ: '🇨🇿', SG: '🇸🇬',
-  AT: '🇦🇹', DK: '🇩🇰', CH: '🇨🇭', IE: '🇮🇪', MA: '🇲🇦',
-  IS: '🇮🇸', PT: '🇵🇹', GR: '🇬🇷', ZA: '🇿🇦', NZ: '🇳🇿',
-};
-
 const countryNames = {
   DE: 'Germany', US: 'United States', GB: 'United Kingdom',
   JP: 'Japan', FR: 'France', NL: 'Netherlands', IT: 'Italy',
@@ -15,8 +8,8 @@ const countryNames = {
 };
 
 export function countryFlag(code) {
-  if (!code) return '';
-  return countryFlags[code] || '';
+  if (!code) return null;
+  return `https://flagcdn.com/16x12/${code.toLowerCase()}.png`;
 }
 
 export function countryName(code) {
@@ -24,4 +17,4 @@ export function countryName(code) {
   return countryNames[code] || code;
 }
 
-export { countryFlags, countryNames };
+export { countryNames };
