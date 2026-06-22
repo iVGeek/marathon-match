@@ -1122,7 +1122,7 @@ body {
 
 .splits-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
   gap: 8px;
   padding: 8px 12px;
   font-size: 11px;
@@ -1140,11 +1140,16 @@ body {
 
 .split-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
   gap: 8px;
   padding: 8px 12px;
   font-size: 13px;
   border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+
+.split-row.fade {
+  background: rgba(239, 68, 68, 0.04);
 }
 
 .split-row:last-child {
@@ -1158,6 +1163,14 @@ body {
 .split-value {
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
+}
+
+.split-value.slow {
+  color: var(--negative);
+}
+
+.split-value.fast {
+  color: var(--positive);
 }
 
 /* BQ Checker */

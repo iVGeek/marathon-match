@@ -48,16 +48,37 @@ export default function MarathonDetail({ projection, onBack }) {
   const rank = estimateRank(p.projectedTimeSec, p.courseId);
   const rankYear = results?.year;
 
-  const numSplits = Math.ceil(p.distanceKm / 5);
-  const splits = Array.from({ length: numSplits }, (_, i) => {
-    const splitDist = Math.min((i + 1) * 5, p.distanceKm);
-    const splitTime = (splitDist / p.distanceKm) * p.projectedTimeSec;
-    const splitPace = splitTime / splitDist;
+  const avgPaceSec = p.projectedTimeSec / p.distanceKm;
+  const fadePct = p.paceFadePct || 6;
+  const totalFade = Math.min(12, Math.max(3, fadePct * Math.min(1, p.distanceKm / p.userDistance || 1.5)));
+  const segmentSize = 5;
+  const numSegments = Math.ceil(p.distanceKm / segmentSize);
+  const segDists = Array.from({ length: numSegments }, (_, i) => {
+    const start = i * segmentSize;
+    const end = Math.min((i + 1) * segmentSize, p.distanceKm);
+    return { idx: i, dist: end - start, cumEnd: end };
+  });
+
+  const rawMultipliers = segDists.map(s => 1 + (totalFade / 100) * (s.cumEnd / p.distanceKm - 0.5));
+  const avgMultiplier = rawMultipliers.reduce((sum, m, i) => sum + m * segDists[i].dist, 0) / p.distanceKm;
+  const multipliers = rawMultipliers.map(m => m / avgMultiplier);
+
+  let cumTime = 0;
+  const splits = segDists.map((s, i) => {
+    const segPace = avgPaceSec * multipliers[i];
+    const segTime = segPace * s.dist;
+    const prevCum = cumTime;
+    cumTime += segTime;
     return {
-      label: `${splitDist} km`,
-      cumulativeTime: timeDisplay(splitTime),
-      avgPace: paceDisplay(splitPace),
-      pctComplete: ((splitDist / p.distanceKm) * 100).toFixed(0),
+      label: `${s.cumEnd} km`,
+      segTime,
+      segPace,
+      cumTime,
+      segPaceDisplay: paceDisplay(segPace),
+      segTimeDisplay: timeDisplay(segTime),
+      cumTimeDisplay: timeDisplay(cumTime),
+      pctComplete: ((s.cumEnd / p.distanceKm) * 100).toFixed(0),
+      isSlow: multipliers[i] > 1.02,
     };
   });
 
@@ -264,23 +285,25 @@ export default function MarathonDetail({ projection, onBack }) {
             })}
           </div>
 
-          {numSplits > 1 && (
+          {numSegments > 1 && (
             <div className="splits-section">
               <h3 className="detail-section-title">Pacing Strategy</h3>
               <p className="detail-section-subtitle">
-                Projected {p.distanceKm} km splits at even pace
+                Projected {p.distanceKm} km splits with realistic pace fade ({totalFade.toFixed(0)}% total fade)
               </p>
               <div className="splits-header">
                 <span>Split</span>
                 <span>Split Time</span>
-                <span>Avg Pace</span>
+                <span>Split Pace</span>
+                <span>Cumulative</span>
               </div>
               <div className="splits-body">
                 {splits.map((split) => (
-                  <div key={split.label} className="split-row">
+                  <div key={split.label} className={`split-row ${split.isSlow ? 'fade' : ''}`}>
                     <span className="split-label">{split.label}</span>
-                    <span className="split-value">{split.cumulativeTime}</span>
-                    <span className="split-value">{split.avgPace}</span>
+                    <span className="split-value">{split.segTimeDisplay}</span>
+                    <span className={`split-value ${split.isSlow ? 'slow' : 'fast'}`}>{split.segPaceDisplay}</span>
+                    <span className="split-value cum">{split.cumTimeDisplay}</span>
                   </div>
                 ))}
               </div>
