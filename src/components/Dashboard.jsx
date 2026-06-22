@@ -191,7 +191,7 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
       </header>
 
       {selectedProjection ? (
-        <MarathonDetail projection={selectedProjection} onBack={handleBack} />
+        <MarathonDetail projection={selectedProjection} onBack={handleBack} athlete={athlete} userAge={userAge} />
       ) : (
         <>
           <div className="input-tabs">

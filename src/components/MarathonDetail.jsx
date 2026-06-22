@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { paceDisplay, timeDisplay } from '../utils/projections';
 import { checkBQ } from '../utils/standardDistances';
 import { countryFlag, countryName } from '../utils/countryData';
@@ -20,15 +20,24 @@ function relevanceBadge(relevance) {
   );
 }
 
-export default function MarathonDetail({ projection, onBack }) {
+export default function MarathonDetail({ projection, onBack, athlete, userAge }) {
   const p = projection;
   const paceRatio = p.projectedPaceSec / p.userPaceSec;
   const isFaster = paceRatio < 1;
   const pctDiff = Math.abs((paceRatio - 1) * 100);
   const isMarathon = Math.abs(p.distanceKm - 42.195) < 0.01;
 
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('male');
+  const defaultAge = userAge || '';
+  const defaultGender = athlete?.sex === 'F' ? 'female' : athlete?.sex === 'M' ? 'male' : 'male';
+  const [age, setAge] = useState(defaultAge);
+  const [gender, setGender] = useState(defaultGender);
+
+  useEffect(() => {
+    if (userAge) setAge(userAge);
+    const g = athlete?.sex === 'F' ? 'female' : athlete?.sex === 'M' ? 'male' : 'male';
+    setGender(g);
+  }, [userAge, athlete]);
+
   const bqResult = (age >= 18 && isMarathon) ? checkBQ(p.projectedTimeSec, parseInt(age), gender) : null;
 
   const bars = [
