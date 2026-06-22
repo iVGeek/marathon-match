@@ -1,3 +1,10 @@
+const countryFlags = {
+  DE: '🇩🇪', US: '🇺🇸', GB: '🇬🇧', JP: '🇯🇵', FR: '🇫🇷',
+  NL: '🇳🇱', IT: '🇮🇹', ES: '🇪🇸', CZ: '🇨🇿', SG: '🇸🇬',
+  AT: '🇦🇹', DK: '🇩🇰', CH: '🇨🇭', IE: '🇮🇪', MA: '🇲🇦',
+  IS: '🇮🇸', PT: '🇵🇹', GR: '🇬🇷', ZA: '🇿🇦', NZ: '🇳🇿',
+};
+
 const countryNames = {
   DE: 'Germany', US: 'United States', GB: 'United Kingdom',
   JP: 'Japan', FR: 'France', NL: 'Netherlands', IT: 'Italy',
@@ -8,9 +15,8 @@ const countryNames = {
 };
 
 export function countryFlag(code) {
-  if (!code || code.length !== 2) return '';
-  const base = 0x1F1E6;
-  return String.fromCodePoint(base + (code.charCodeAt(0) - 65), base + (code.charCodeAt(1) - 65));
+  if (!code) return '';
+  return countryFlags[code] || '';
 }
 
 export function countryName(code) {
@@ -18,4 +24,4 @@ export function countryName(code) {
   return countryNames[code] || code;
 }
 
-export { countryNames };
+export { countryFlags, countryNames };
