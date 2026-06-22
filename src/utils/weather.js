@@ -36,6 +36,15 @@ const weatherData = {
   leadville:  { tempC: 12, condition: 'Cool, thin air at altitude', month: 'Aug' },
   tarawera:   { tempC: 18, condition: 'Warm, possibility of rain', month: 'Feb' },
   'marathon-des-sables': { tempC: 38, condition: 'Extreme heat, desert', month: 'Apr' },
+  rotterdam:  { tempC: 12, condition: 'Cool, possible headwind', month: 'Apr' },
+  stockholm:  { tempC: 14, condition: 'Mild, sunny', month: 'Jun' },
+  ottawa:     { tempC: 15, condition: 'Mild, light wind', month: 'May' },
+  'hong-kong': { tempC: 22, condition: 'Humid, warm', month: 'Feb' },
+  'los-angeles': { tempC: 16, condition: 'Cool start, warming up', month: 'Mar' },
+  munich:     { tempC: 13, condition: 'Cool, possible rain', month: 'Oct' },
+  budapest:   { tempC: 15, condition: 'Mild, sunny', month: 'Oct' },
+  warsaw:     { tempC: 12, condition: 'Cool, overcast', month: 'Sep' },
+  lisbon:     { tempC: 17, condition: 'Mild, coastal breeze', month: 'Oct' },
 };
 
 function getWeather(courseId) {

@@ -4,7 +4,8 @@ const countryNames = {
   ES: 'Spain', CZ: 'Czech Republic', SG: 'Singapore', AT: 'Austria',
   DK: 'Denmark', CH: 'Switzerland', IE: 'Ireland', MA: 'Morocco',
   IS: 'Iceland', PT: 'Portugal', GR: 'Greece', ZA: 'South Africa',
-  NZ: 'New Zealand',
+  NZ: 'New Zealand', SE: 'Sweden', CA: 'Canada', HK: 'Hong Kong',
+  HU: 'Hungary', PL: 'Poland',
 };
 
 export function countryFlag(code) {

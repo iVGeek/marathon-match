@@ -137,6 +137,51 @@ const courses = {
       winnerMen: { name: 'Kassahun Dinku', country: 'ETH', timeSec: timeToSec(2,10,48) },
       winnerWomen: { name: 'Nancy Kiprop', country: 'KEN', timeSec: timeToSec(2,36,52) },
     },
+    rotterdam: {
+      year: 2025, mu: 9.55, sigma: 0.36, finishers: 14250,
+      winnerMen: { name: 'Tsegaye Mekonnen', country: 'ETH', timeSec: timeToSec(2,1,25) },
+      winnerWomen: { name: 'Birhane Dibaba', country: 'ETH', timeSec: timeToSec(2,15,0) },
+    },
+    stockholm: {
+      year: 2025, mu: 9.76, sigma: 0.36, finishers: 11230,
+      winnerMen: { name: 'Sharu Asefa', country: 'ETH', timeSec: timeToSec(2,11,20) },
+      winnerWomen: { name: 'Caroline Wiklund', country: 'SWE', timeSec: timeToSec(2,32,15) },
+    },
+    ottawa: {
+      year: 2025, mu: 9.74, sigma: 0.37, finishers: 5230,
+      winnerMen: { name: 'Hussein Hashim', country: 'KEN', timeSec: timeToSec(2,13,30) },
+      winnerWomen: { name: 'Ruth Chebitok', country: 'KEN', timeSec: timeToSec(2,31,10) },
+    },
+    'hong-kong': {
+      year: 2025, mu: 9.85, sigma: 0.38, finishers: 18450,
+      winnerMen: { name: 'Futsum Ziasbahun', country: 'ETH', timeSec: timeToSec(2,12,30) },
+      winnerWomen: { name: 'Hellen Kimutai', country: 'KEN', timeSec: timeToSec(2,35,15) },
+    },
+    'los-angeles': {
+      year: 2025, mu: 9.78, sigma: 0.38, finishers: 22450,
+      winnerMen: { name: 'John Togom', country: 'KEN', timeSec: timeToSec(2,12,45) },
+      winnerWomen: { name: 'Tejinesh Gola', country: 'ETH', timeSec: timeToSec(2,31,30) },
+    },
+    munich: {
+      year: 2025, mu: 9.75, sigma: 0.36, finishers: 9850,
+      winnerMen: { name: 'Edwin Kimosop', country: 'KEN', timeSec: timeToSec(2,9,55) },
+      winnerWomen: { name: 'Tigist Gadisa', country: 'ETH', timeSec: timeToSec(2,28,10) },
+    },
+    budapest: {
+      year: 2025, mu: 9.73, sigma: 0.36, finishers: 8210,
+      winnerMen: { name: 'Charles Yosei', country: 'KEN', timeSec: timeToSec(2,10,5) },
+      winnerWomen: { name: 'Marta Kani', country: 'ETH', timeSec: timeToSec(2,29,40) },
+    },
+    warsaw: {
+      year: 2025, mu: 9.77, sigma: 0.35, finishers: 7560,
+      winnerMen: { name: 'Cosmas Kimutai', country: 'KEN', timeSec: timeToSec(2,11,15) },
+      winnerWomen: { name: 'Mentwab Momina', country: 'ETH', timeSec: timeToSec(2,31,5) },
+    },
+    lisbon: {
+      year: 2025, mu: 9.70, sigma: 0.37, finishers: 6230,
+      winnerMen: { name: 'Raphael Wanjala', country: 'KEN', timeSec: timeToSec(2,8,40) },
+      winnerWomen: { name: 'Agatha Rioba', country: 'KEN', timeSec: timeToSec(2,27,15) },
+    },
   },
   half: {
     'berlin-half': {

@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { paceDisplay } from '../utils/projections';
 import { countryFlag } from '../utils/countryData';
 import { estimateRank } from '../utils/raceResults';
 
-function relevanceBadge(relevance) {
+const relevanceBadge = memo(function RelevanceBadge({ relevance }) {
   const styles = {
     high: { cls: 'rel-high', label: '★ Very relevant' },
     medium: { cls: 'rel-medium', label: '● Relevant' },
@@ -12,7 +12,52 @@ function relevanceBadge(relevance) {
   };
   const s = styles[relevance.level] || styles.estimate;
   return <span className={`rel-badge ${s.cls}`}>{s.label}</span>;
-}
+});
+
+const GridRow = memo(function GridRow({ p, isHovered, onHover, onLeave, onSelect }) {
+  const paceRatio = p.projectedPaceSec / p.userPaceSec;
+  const isFaster = paceRatio < 1;
+  const pctDiff = Math.abs((paceRatio - 1) * 100);
+  const rank = useMemo(() => estimateRank(p.projectedTimeSec, p.courseId), [p.projectedTimeSec, p.courseId]);
+
+  return (
+    <button
+      className={`grid-row ${isHovered ? 'hovered' : ''}`}
+      style={{ borderLeftColor: p.color }}
+      onMouseEnter={onHover}
+      onMouseLeave={onLeave}
+      onClick={() => onSelect(p)}
+    >
+      <span className="grid-cell course">
+        <span className="course-dot" style={{ background: p.color }} />
+        <span className="course-name">{p.courseName}</span>
+        {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" onError={(e) => { e.target.style.display='none' }} /> : null}
+      </span>
+      <span className="grid-cell dist">{p.distanceKm} km</span>
+      <span className="grid-cell time">{p.projectedTime}</span>
+      <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
+      <span className="grid-cell rank">
+        {rank ? (() => {
+          const rankColor = rank.topPct <= 5 ? '#27ae60' : rank.topPct <= 10 ? '#2ecc71' : rank.topPct <= 25 ? 'var(--accent)' : '#888';
+          const rankLabel = rank.topPct <= 1 ? 'ELITE' : rank.topPct <= 5 ? `Top ${rank.topPct.toFixed(1)}%` : `#${rank.position.toLocaleString()}`;
+          return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankLabel}</span>;
+        })() : null}
+      </span>
+      <span className="grid-cell relev"><relevanceBadge relevance={p.relevance} /></span>
+      <span className="grid-cell diff">
+        <span className={`diff-badge ${p.diffVsRun === 'More' ? 'hard' : p.diffVsRun === 'Less' ? 'easy' : 'moderate'}`}>
+          {p.diffVsRun === 'Less' ? `Less (${p.diffVsRunPct.toFixed(0)}% easier)` : p.diffVsRun === 'More' ? `More (${p.diffVsRunPct.toFixed(0)}% harder)` : 'Similar'}
+        </span>
+      </span>
+      <span className={`grid-cell adj ${isFaster ? 'faster' : 'slower'}`}>
+        {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
+      </span>
+      <span className="grid-cell winner">
+        {rank ? <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm)} F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm)}</span> : null}
+      </span>
+    </button>
+  );
+});
 
 const SEGMENTS = [
   { key: 'half', label: 'Half', icon: '½', dist: 21.0975, eps: 0.01 },
@@ -20,7 +65,7 @@ const SEGMENTS = [
   { key: 'ultra', label: 'Ultra', icon: '∞', dist: null, eps: null },
 ];
 
-export default function MarathonGrid({ projections, onSelect }) {
+const MarathonGrid = memo(function MarathonGrid({ projections, onSelect }) {
   const [segment, setSegment] = useState('full');
   const [sort, setSort] = useState('time');
   const [hoveredId, setHoveredId] = useState(null);
@@ -31,21 +76,21 @@ export default function MarathonGrid({ projections, onSelect }) {
     ultra: projections.filter(p => p.distanceKm > 45).length,
   }), [projections]);
 
-  const filtered = projections.filter((p) => {
+  const filtered = useMemo(() => projections.filter((p) => {
     if (segment === 'half') return Math.abs(p.distanceKm - 21.0975) < 0.01;
     if (segment === 'full') return Math.abs(p.distanceKm - 42.195) < 0.01;
     if (segment === 'ultra') return p.distanceKm > 45;
     return true;
-  });
+  }), [projections, segment]);
 
-  const sorted = [...filtered].sort((a, b) => {
+  const sorted = useMemo(() => [...filtered].sort((a, b) => {
     if (sort === 'time') return a.projectedTimeSec - b.projectedTimeSec;
     if (sort === 'pace') return a.projectedPaceSec - b.projectedPaceSec;
     if (sort === 'difficulty') return b.difficulty - a.difficulty;
     if (sort === 'name') return a.courseName.localeCompare(b.courseName);
     if (sort === 'relevance') return b.relevance.score - a.relevance.score || a.projectedTimeSec - b.projectedTimeSec;
     return 0;
-  });
+  }), [filtered, sort]);
 
   const sortOptions = [
     { value: 'relevance', label: 'Relevance' },
@@ -97,54 +142,21 @@ export default function MarathonGrid({ projections, onSelect }) {
           </div>
 
           <div className="grid-body">
-            {sorted.slice(0, 50).map((p) => {
-              const paceRatio = p.projectedPaceSec / p.userPaceSec;
-              const isFaster = paceRatio < 1;
-              const pctDiff = Math.abs((paceRatio - 1) * 100);
-              const rank = estimateRank(p.projectedTimeSec, p.courseId);
-
-              return (
-                <button
-                  key={p.courseId}
-                  className={`grid-row ${hoveredId === p.courseId ? 'hovered' : ''}`}
-                  style={{ borderLeftColor: p.color }}
-                  onMouseEnter={() => setHoveredId(p.courseId)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => onSelect(p)}
-                >
-                  <span className="grid-cell course">
-                    <span className="course-dot" style={{ background: p.color }} />
-                    <span className="course-name">{p.courseName}</span>
-                    {p.country ? <img src={countryFlag(p.country)} alt="" className="course-flag" onError={(e) => { e.target.style.display='none' }} /> : null}
-                  </span>
-                  <span className="grid-cell dist">{p.distanceKm} km</span>
-                  <span className="grid-cell time">{p.projectedTime}</span>
-                  <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
-                  <span className="grid-cell rank">
-                    {rank ? (() => {
-                      const rankColor = rank.topPct <= 5 ? '#27ae60' : rank.topPct <= 10 ? '#2ecc71' : rank.topPct <= 25 ? 'var(--accent)' : '#888';
-                      const rankLabel = rank.topPct <= 1 ? 'ELITE' : rank.topPct <= 5 ? `Top ${rank.topPct.toFixed(1)}%` : `#${rank.position.toLocaleString()}`;
-                      return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankLabel}</span>;
-                    })() : null}
-                  </span>
-                  <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>
-                  <span className="grid-cell diff">
-                    <span className={`diff-badge ${p.diffVsRun === 'More' ? 'hard' : p.diffVsRun === 'Less' ? 'easy' : 'moderate'}`}>
-                      {p.diffVsRun === 'Less' ? `Less (${p.diffVsRunPct.toFixed(0)}% easier)` : p.diffVsRun === 'More' ? `More (${p.diffVsRunPct.toFixed(0)}% harder)` : 'Similar'}
-                    </span>
-                  </span>
-                  <span className={`grid-cell adj ${isFaster ? 'faster' : 'slower'}`}>
-                    {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
-                  </span>
-                  <span className="grid-cell winner">
-                    {rank ? <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm)} F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm)}</span> : null}
-                  </span>
-                </button>
-              );
-            })}
+            {sorted.slice(0, 50).map((p) => (
+              <GridRow
+                key={p.courseId}
+                p={p}
+                isHovered={hoveredId === p.courseId}
+                onHover={() => setHoveredId(p.courseId)}
+                onLeave={() => setHoveredId(null)}
+                onSelect={onSelect}
+              />
+            ))}
           </div>
         </>
       )}
     </div>
   );
-}
+});
+
+export default MarathonGrid;

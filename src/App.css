@@ -21,6 +21,14 @@
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --transition: 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
@@ -1168,6 +1176,38 @@ body {
   background: rgba(252, 76, 2, 0.1);
 }
 
+/* PR Tracker Buttons */
+.pr-update-btn,
+.pr-clear-btn {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pr-update-btn {
+  background: var(--positive);
+  color: #fff;
+}
+
+.pr-update-btn:hover {
+  background: #1da14c;
+}
+
+.pr-clear-btn {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.pr-clear-btn:hover {
+  background: var(--negative);
+  color: #fff;
+}
+
 /* Splits */
 .splits-section {
   margin-top: 24px;
@@ -1616,4 +1656,123 @@ body {
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section {
+  animation: fadeIn 0.3s ease both;
+}
+
+.section:nth-child(2) { animation-delay: 0.04s; }
+.section:nth-child(3) { animation-delay: 0.08s; }
+.section:nth-child(4) { animation-delay: 0.12s; }
+.section:nth-child(5) { animation-delay: 0.16s; }
+.section:nth-child(6) { animation-delay: 0.20s; }
+
+/* Responsive: tablet */
+@media (max-width: 900px) {
+  .dashboard {
+    padding: 16px;
+  }
+  .detail-summary {
+    grid-template-columns: 1fr;
+  }
+  .grid-header,
+  .grid-row {
+    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 0.6fr 0.9fr 0.7fr 0.8fr 0.8fr;
+    font-size: 12px;
+    gap: 4px;
+  }
+  .grid-cell.winner .winner-pace {
+    font-size: 10px;
+  }
+  .athlete-stats {
+    flex-wrap: wrap;
+  }
+}
+
+/* Responsive: mobile */
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 12px;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .header-left {
+    flex-wrap: wrap;
+  }
+  .header-athlete {
+    font-size: 12px;
+  }
+  .grid-header,
+  .grid-row {
+    grid-template-columns: 2fr 0.5fr 0.8fr 0.7fr 0.5fr 0.8fr 0.6fr 0.7fr 0.7fr;
+    font-size: 11px;
+    gap: 2px;
+    padding: 8px 6px;
+    overflow-x: auto;
+  }
+  .grid-cell .course-dot {
+    display: none;
+  }
+  .grid-cell .course-flag {
+    display: none;
+  }
+  .detail-body {
+    grid-template-columns: 1fr;
+  }
+  .manual-row {
+    flex-direction: column;
+  }
+  .equiv-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  .input-tabs {
+    width: 100%;
+  }
+  .input-tab {
+    flex: 1;
+    justify-content: center;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  .section {
+    padding: 16px;
+  }
+  .detail-title {
+    font-size: 20px;
+  }
+  .comparison-row {
+    grid-template-columns: 60px 1fr;
+  }
+  .activity-card {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .activity-stats {
+    font-size: 11px;
+  }
+  .weather-details {
+    grid-template-columns: 1fr;
+  }
+  .segment-tabs {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .segment-tab {
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .bq-inputs {
+    flex-direction: column;
+  }
 }

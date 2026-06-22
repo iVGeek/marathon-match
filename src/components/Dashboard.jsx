@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { fetchActivities, fetchActivityDetail, isRunningActivity, parseActivityStats, parseActivityDetail, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
 import { analyzeSplits } from '../utils/paceAnalysis';
 import ActivitySelector from './ActivitySelector';
@@ -8,6 +8,8 @@ import EquivTimes from './EquivTimes';
 import MarathonGrid from './MarathonGrid';
 import MarathonDetail from './MarathonDetail';
 import PaceBand from './PaceBand';
+import TrainingPaces from './TrainingPaces';
+import PRTracker from './PRTracker';
 import { projectRun } from '../utils/projections';
 import { allCourses } from '../utils/marathonData';
 
@@ -15,7 +17,6 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [paceAnalysis, setPaceAnalysis] = useState(null);
-  const [projections, setProjections] = useState([]);
   const [selectedProjection, setSelectedProjection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userAge, setUserAge] = useState(() => {
@@ -35,6 +36,25 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   };
   const [currentToken, setCurrentToken] = useState(() => normalizeToken(token));
   const [inputMode, setInputMode] = useState('strava');
+
+  const computedProjections = useMemo(() => {
+    if (!selectedActivity) return [];
+    const userTemp = selectedActivity.averageTemp || null;
+    const athleteWithAge = { ...athlete, age: userAge };
+    const results = allCourses.map((course) =>
+      projectRun(
+        selectedActivity.distanceKm,
+        selectedActivity.movingTimeSec,
+        selectedActivity.elevationGain,
+        course,
+        userTemp,
+        paceAnalysis,
+        athleteWithAge
+      )
+    );
+    results.sort((a, b) => a.projectedTimeSec - b.projectedTimeSec);
+    return results;
+  }, [selectedActivity, paceAnalysis, athlete, userAge]);
 
   const ensureValidToken = useCallback(async (tok) => {
     if (!isTokenExpired(tok)) return tok.accessToken;
@@ -116,22 +136,6 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
 
     setPaceAnalysis(analysis);
     setSelectedActivity(effectiveActivity);
-
-    const userTemp = effectiveActivity.averageTemp || null;
-    const athleteWithAge = { ...athlete, age: userAge };
-    const results = allCourses.map((course) =>
-      projectRun(
-        effectiveActivity.distanceKm,
-        effectiveActivity.movingTimeSec,
-        effectiveActivity.elevationGain,
-        course,
-        userTemp,
-        analysis,
-        athleteWithAge
-      )
-    );
-    results.sort((a, b) => a.projectedTimeSec - b.projectedTimeSec);
-    setProjections(results);
   }, [currentToken, ensureValidToken, athlete]);
 
   const handleSelectProjection = useCallback((proj) => {
@@ -238,10 +242,12 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
                 <div className="section"><p className="text-muted">No per-km split data from Strava for this activity. Check browser console (F12) — if you see <code>splits_metric</code> count: 0, the activity may lack GPS data or be too short. Projections use average pace.</p></div>
               )}
 
+              <TrainingPaces activity={selectedActivity} />
               <EquivTimes activity={selectedActivity} analysis={paceAnalysis} />
-              {projections.length > 0 && (
+              <PRTracker activity={selectedActivity} />
+              {computedProjections.length > 0 && (
                 <MarathonGrid
-                  projections={projections}
+                  projections={computedProjections}
                   onSelect={handleSelectProjection}
                 />
               )}
