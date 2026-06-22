@@ -47,6 +47,13 @@ app.get('/api/auth/callback', async (req, res) => {
   }
 });
 
+app.get('/api/config', (req, res) => {
+  res.json({
+    stravaClientId: STRAVA_CLIENT_ID,
+    stravaRedirectUri: `http://localhost:${PORT}/api/auth/callback`,
+  });
+});
+
 app.post('/api/auth/refresh', async (req, res) => {
   const { refreshToken } = req.body;
   try {

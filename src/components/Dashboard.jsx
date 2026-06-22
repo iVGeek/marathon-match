@@ -1,14 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchActivities, isRunningActivity, parseActivityStats, isTokenExpired, refreshAccessToken } from '../utils/strava';
-import { storeToken } from '../utils/strava';
-import config from '../config';
+import { fetchActivities, isRunningActivity, parseActivityStats, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
 import ActivitySelector from './ActivitySelector';
 import MarathonGrid from './MarathonGrid';
 import MarathonDetail from './MarathonDetail';
 import { projectRun } from '../utils/projections';
 import { allCourses } from '../utils/marathonData';
 
-export default function Dashboard({ token, athlete, onLogout }) {
+export default function Dashboard({ token, athlete, onLogout, config }) {
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [projections, setProjections] = useState([]);
@@ -20,7 +18,7 @@ export default function Dashboard({ token, athlete, onLogout }) {
   const ensureValidToken = useCallback(async (tok) => {
     if (!isTokenExpired(tok)) return tok.accessToken;
     try {
-      const data = await refreshAccessToken(tok.refreshToken, config.strava.clientId, config.strava.clientSecret);
+      const data = await refreshAccessToken(tok.refreshToken);
       const newToken = {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,

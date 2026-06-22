@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getStoredToken, storeToken, clearToken, isTokenExpired, getAuthUrl } from './utils/strava';
-import config from './config';
+import { fetchConfig, getCachedConfig } from './config';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import './App.css';
@@ -8,7 +8,20 @@ import './App.css';
 export default function App() {
   const [token, setToken] = useState(null);
   const [athlete, setAthlete] = useState(null);
+  const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [configError, setConfigError] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const cfg = await fetchConfig();
+        setConfig(cfg);
+      } catch (err) {
+        setConfigError(err.message);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -44,7 +57,7 @@ export default function App() {
     setAthlete(null);
   }, []);
 
-  if (loading) {
+  if (loading || !config) {
     return (
       <div className="app-loading">
         <div className="spinner" />
@@ -52,24 +65,21 @@ export default function App() {
     );
   }
 
-  if (!token) {
-    if (!config.strava.clientId) {
-      return (
-        <div className="login-page">
-          <div className="login-card setup-notice">
-            <h2>Strava API Setup Required</h2>
-            <p>To use Marathon Match, you need to create a Strava API application.</p>
-            <p>1. Go to <a href="https://www.strava.com/settings/api" target="_blank" rel="noreferrer">strava.com/settings/api</a></p>
-            <p>2. Create an application, set the callback domain to <code>localhost</code></p>
-            <p>3. Copy your Client ID and Client Secret</p>
-            <p>4. Rename <code>server/.env.example</code> to <code>server/.env</code> and fill in the values</p>
-            <p>5. Also create a <code>.env</code> file at the root with:</p>
-            <code>VITE_STRAVA_CLIENT_ID=your_client_id<br/>VITE_STRAVA_REDIRECT_URI=http://localhost:3001/api/auth/callback</code>
-          </div>
+  if (configError || !config.stravaClientId) {
+    return (
+      <div className="login-page">
+        <div className="login-card setup-notice">
+          <h2>Backend Not Running</h2>
+          <p>Can't reach the backend server. Make sure it's running on port 3001.</p>
+          <p>Configure <code>server/.env</code> with your Strava credentials and run:</p>
+          <code>npm run start</code>
         </div>
-      );
-    }
-    const authUrl = getAuthUrl(config.strava.clientId, config.strava.redirectUri);
+      </div>
+    );
+  }
+
+  if (!token) {
+    const authUrl = getAuthUrl(config.stravaClientId, config.stravaRedirectUri);
     return <Login authUrl={authUrl} />;
   }
 
@@ -78,6 +88,7 @@ export default function App() {
       token={token}
       athlete={athlete}
       onLogout={handleLogout}
+      config={config}
     />
   );
 }

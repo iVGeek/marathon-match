@@ -74,11 +74,11 @@ export function parseActivityStats(activity) {
   };
 }
 
-export async function refreshAccessToken(refreshToken, clientId, clientSecret) {
+export async function refreshAccessToken(refreshToken) {
   const res = await fetch('/api/auth/refresh', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken, clientId, clientSecret }),
+    body: JSON.stringify({ refreshToken }),
   });
   if (!res.ok) throw new Error('Failed to refresh token');
   return res.json();

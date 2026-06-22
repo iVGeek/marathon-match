@@ -1,11 +1,13 @@
-const config = {
-  strava: {
-    clientId: import.meta.env.VITE_STRAVA_CLIENT_ID || '',
-    redirectUri: import.meta.env.VITE_STRAVA_REDIRECT_URI || 'http://localhost:3001/api/auth/callback',
-    authUrl: 'https://www.strava.com/oauth/authorize',
-    tokenUrl: 'https://www.strava.com/oauth/token',
-    apiBase: 'https://www.strava.com/api/v3',
-  },
-};
+let cachedConfig = null;
 
-export default config;
+export async function fetchConfig() {
+  if (cachedConfig) return cachedConfig;
+  const res = await fetch('/api/config');
+  if (!res.ok) throw new Error('Failed to fetch config');
+  cachedConfig = await res.json();
+  return cachedConfig;
+}
+
+export function getCachedConfig() {
+  return cachedConfig;
+}
