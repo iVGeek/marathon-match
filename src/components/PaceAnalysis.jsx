@@ -2,12 +2,15 @@ import { paceDisplay } from '../utils/projections';
 
 function splitChart(splits, avgPace, color) {
   if (!splits || splits.length === 0) return null;
-  const maxPace = Math.max(...splits.map(s => s.moving_time / s.distance * 1.15), avgPace * 1.2);
-  const minPace = Math.min(...splits.map(s => s.moving_time / s.distance * 0.85), avgPace * 0.8);
+  const paceValues = splits.map(s => s.moving_time / s.distance).filter(isFinite);
+  if (paceValues.length === 0) return null;
+  const maxPace = Math.max(...paceValues.map(p => p * 1.15), avgPace * 1.2);
+  const minPace = Math.min(...paceValues.map(p => p * 0.85), avgPace * 0.8);
   const range = maxPace - minPace || 1;
 
   return splits.slice(0, 40).map((s, i) => {
     const pace = s.moving_time / s.distance;
+    if (!isFinite(pace)) return null;
     const pct = 10 + ((maxPace - pace) / range) * 80;
     const isFaster = pace <= avgPace;
     return (
@@ -29,7 +32,7 @@ export default function PaceAnalysis({ analysis }) {
   if (!analysis) return null;
 
   const a = analysis;
-  const gapDiff = a.avgGAPSec ? ((a.avgPaceSec - a.avgGAPSec) / a.avgPaceSec) * 100 : 0;
+  const gapDiff = a.avgGAPSec && a.avgPaceSec > 0 ? ((a.avgPaceSec - a.avgGAPSec) / a.avgPaceSec) * 100 : 0;
 
   return (
     <div className="section">
@@ -63,7 +66,7 @@ export default function PaceAnalysis({ analysis }) {
         <div className="pa-card">
           <div className="pa-label">Consistency</div>
           <div className="pa-value">{a.consistencyLabel}</div>
-          <div className="pa-note">CV: {a.consistencyCV.toFixed(1)}%</div>
+          <div className="pa-note">CV: {isFinite(a.consistencyCV) ? a.consistencyCV.toFixed(1) : '?'}%</div>
         </div>
 
         {a.avgHR && (

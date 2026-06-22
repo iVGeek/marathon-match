@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { paceDisplay } from '../utils/projections';
+import { countryFlag } from '../utils/countryData';
+import { getResults, estimateRank } from '../utils/raceResults';
 
 const FILTERS = {
   all: 'All Courses',
@@ -78,6 +80,7 @@ export default function MarathonGrid({ projections, onSelect }) {
         <span className="grid-cell dist">Distance</span>
         <span className="grid-cell time">Projected Time</span>
         <span className="grid-cell pace">Pace</span>
+        <span className="grid-cell rank">Rank</span>
         <span className="grid-cell relev">Relevance</span>
         <span className="grid-cell diff">Difficulty</span>
         <span className="grid-cell adj">vs Your Pace</span>
@@ -102,10 +105,17 @@ export default function MarathonGrid({ projections, onSelect }) {
               <span className="grid-cell course">
                 <span className="course-dot" style={{ background: p.color }} />
                 <span className="course-name">{p.courseName}</span>
+                {p.country ? <span className="course-flag">{countryFlag(p.country)}</span> : null}
               </span>
               <span className="grid-cell dist">{p.distanceKm} km</span>
               <span className="grid-cell time">{p.projectedTime}</span>
               <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
+              <span className="grid-cell rank">
+                {(() => {
+                  const r = estimateRank(p.projectedTimeSec, p.courseId);
+                  return r ? <span className="rank-badge">#{r.position.toLocaleString()}</span> : null;
+                })()}
+              </span>
               <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>
               <span className="grid-cell diff">
                 <span className={`diff-badge ${p.difficulty >= 1.2 ? 'hard' : p.difficulty >= 1.05 ? 'moderate' : 'easy'}`}>

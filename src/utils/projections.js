@@ -36,6 +36,7 @@ function getRelevance(userDistanceKm, targetDistanceKm) {
 }
 
 function paceDisplay(secondsPerKm) {
+  if (secondsPerKm == null || !isFinite(secondsPerKm)) return '--:-- /km';
   const min = Math.floor(secondsPerKm / 60);
   const sec = Math.round(secondsPerKm % 60);
   return `${min}:${sec.toString().padStart(2, '0')} /km`;
@@ -89,6 +90,7 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     courseId: targetCourse.id,
     courseName: targetCourse.name,
     location: targetCourse.location,
+    country: targetCourse.country,
     distanceKm: targetCourse.distanceKm,
     elevationGain: targetCourse.elevationGain,
     difficulty: targetCourse.difficulty,

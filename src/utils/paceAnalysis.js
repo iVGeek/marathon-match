@@ -5,7 +5,8 @@ function analyzeSplits(splits, averageHR, maxHR) {
 
   const valid = splits.filter(s => s.distance > 0 && s.moving_time > 0);
 
-  const paces = valid.map(s => (s.moving_time / s.distance) * 1000);
+  const paces = valid.map(s => (s.moving_time / s.distance) * 1000).filter(p => isFinite(p));
+  if (paces.length === 0) return null;
   const avgPace = paces.reduce((a, b) => a + b, 0) / paces.length;
 
   const gapSpeeds = valid.map(s => s.average_grade_adjusted_speed).filter(Boolean);
@@ -20,9 +21,8 @@ function analyzeSplits(splits, averageHR, maxHR) {
   const secondAvg = secondHalf.length ? secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length : 0;
   const paceFadePct = firstAvg > 0 ? ((secondAvg - firstAvg) / firstAvg) * 100 : 0;
 
-  const mean = avgPace;
-  const variance = paces.reduce((sum, p) => sum + (p - mean) ** 2, 0) / paces.length;
-  const cv = (Math.sqrt(variance) / mean) * 100;
+  const variance = paces.reduce((sum, p) => sum + (p - avgPace) ** 2, 0) / paces.length;
+  const cv = avgPace > 0 ? (Math.sqrt(variance) / avgPace) * 100 : 0;
 
   const hrSplits = valid.map(s => s.average_heartrate).filter(Boolean);
   const hrDrift = hrSplits.length > 1

@@ -149,9 +149,10 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
         <div className="header-left">
           <h1 className="header-title">Marathon Match</h1>
           {athlete && (
-            <span className="header-athlete">
-              {athlete.firstname} {athlete.lastname}
-            </span>
+            <div className="header-athlete">
+              {athlete.profile && <img src={athlete.profile} alt="" className="athlete-avatar" />}
+              <span>{athlete.firstname} {athlete.lastname}</span>
+            </div>
           )}
         </div>
         <button className="logout-btn" onClick={onLogout}>

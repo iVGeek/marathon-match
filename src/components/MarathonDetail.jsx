@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { paceDisplay, timeDisplay } from '../utils/projections';
 import { checkBQ } from '../utils/standardDistances';
+import { countryFlag, countryName } from '../utils/countryData';
+import { getResults, estimateRank } from '../utils/raceResults';
 import ElevationChart from './ElevationChart';
 
 function relevanceBadge(relevance) {
@@ -42,6 +44,9 @@ export default function MarathonDetail({ projection, onBack }) {
     return Math.max(uv, pv);
   }), 1);
 
+  const results = getResults(p.courseId);
+  const rank = estimateRank(p.projectedTimeSec, p.courseId);
+
   const numSplits = Math.ceil(p.distanceKm / 5);
   const splits = Array.from({ length: numSplits }, (_, i) => {
     const splitDist = Math.min((i + 1) * 5, p.distanceKm);
@@ -65,8 +70,8 @@ export default function MarathonDetail({ projection, onBack }) {
         <div className="detail-title-row">
           <span className="course-dot large" style={{ background: p.color }} />
           <div>
-            <h2 className="detail-title">{p.courseName}</h2>
-            <p className="detail-location">{p.location}</p>
+            <h2 className="detail-title">{p.courseName} {p.country ? countryFlag(p.country) : ''}</h2>
+            <p className="detail-location">{countryFlag(p.country)} {p.location} {p.country ? '(' + countryName(p.country) + ')' : ''}</p>
           </div>
         </div>
         <div className="detail-summary">
@@ -132,6 +137,26 @@ export default function MarathonDetail({ projection, onBack }) {
                   ({p.weatherFactor > 1 ? 'harder' : 'easier'} conditions than your run)
                 </div>
               )}
+            </div>
+          )}
+
+          {rank && (
+            <div className="ranking-info">
+              <div className="ranking-header">Race Ranking Estimate</div>
+              <div className="ranking-details">
+                <div className="ranking-stat">
+                  <span className="ranking-label">Projected position</span>
+                  <span className="ranking-value">#{rank.position.toLocaleString()} of {rank.totalFinishers.toLocaleString()}</span>
+                </div>
+                <div className="ranking-stat">
+                  <span className="ranking-label">Top</span>
+                  <span className="ranking-value">{rank.topPct}%</span>
+                </div>
+                <div className="ranking-stat">
+                  <span className="ranking-label">{rank.totalFinishers > 10000 ? rank.totalFinishers.toLocaleString() : ''} finishers</span>
+                  <span className="ranking-value">{rank.winnerName} won in {timeDisplay(rank.winnerTimeSec)}</span>
+                </div>
+              </div>
             </div>
           )}
 
