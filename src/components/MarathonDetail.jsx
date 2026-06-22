@@ -123,6 +123,8 @@ export default function MarathonDetail({ projection, onBack }) {
             <span className="tag">{p.diffVsRun === 'Less' ? `Easier (${p.diffVsRunPct.toFixed(0)}% less)` : p.diffVsRun === 'More' ? `Harder (${p.diffVsRunPct.toFixed(0)}% more)` : 'Similar difficulty'}</span>
             <span className="tag">{p.distanceKm} km</span>
             {p.endurancePenalty > 1 && <span className="tag">+{((p.endurancePenalty - 1) * 100).toFixed(0)}% endurance adj</span>}
+            {p.ageFactor && p.ageFactor > 1 && <span className="tag">+{((p.ageFactor - 1) * 100).toFixed(0)}% age adj</span>}
+            {p.userWeight && <span className="tag">{p.userWeight} kg</span>}
           </div>
 
           <ElevationChart courseId={p.courseId} distanceKm={p.distanceKm} color={p.color} />
@@ -189,6 +191,20 @@ export default function MarathonDetail({ projection, onBack }) {
               <strong>Endurance penalty applied:</strong> {((p.endurancePenalty - 1) * 100).toFixed(0)}%
               added because your run ({p.userDistance.toFixed(1)} km) is shorter than this course
               ({p.distanceKm} km).
+            </div>
+          )}
+
+          {p.ageFactor && p.ageFactor > 1 && (
+            <div className="endurance-note">
+              <strong>Age adjustment applied:</strong> {((p.ageFactor - 1) * 100).toFixed(0)}%
+              added for age {p.userAge} (peak performance modeled at age 27, slower recovery and endurance decline beyond).
+            </div>
+          )}
+
+          {p.userWeight && (
+            <div className="endurance-note">
+              <strong>Weight-based hill penalty:</strong> {p.userWeight} kg body weight factors into elevation adjustment
+              — heavier runners lose more time on hilly courses.
             </div>
           )}
 

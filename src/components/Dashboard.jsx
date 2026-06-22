@@ -18,6 +18,10 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const [projections, setProjections] = useState([]);
   const [selectedProjection, setSelectedProjection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userAge, setUserAge] = useState(() => {
+    const saved = localStorage.getItem('marathon_match_age');
+    return saved ? parseInt(saved, 10) : null;
+  });
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState(null);
   const normalizeToken = (t) => {
@@ -114,6 +118,7 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
     setSelectedActivity(effectiveActivity);
 
     const userTemp = effectiveActivity.averageTemp || null;
+    const athleteWithAge = { ...athlete, age: userAge };
     const results = allCourses.map((course) =>
       projectRun(
         effectiveActivity.distanceKm,
@@ -121,12 +126,13 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
         effectiveActivity.elevationGain,
         course,
         userTemp,
-        analysis
+        analysis,
+        athleteWithAge
       )
     );
     results.sort((a, b) => a.projectedTimeSec - b.projectedTimeSec);
     setProjections(results);
-  }, [currentToken, ensureValidToken]);
+  }, [currentToken, ensureValidToken, athlete]);
 
   const handleSelectProjection = useCallback((proj) => {
     setSelectedProjection(proj);
@@ -155,7 +161,27 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
           {athlete && (
             <div className="header-athlete">
               {athlete.profile && <img src={athlete.profile} alt="" className="athlete-avatar" />}
-              <span>{athlete.firstname} {athlete.lastname}</span>
+              <span className="athlete-name">{athlete.firstname} {athlete.lastname}</span>
+              <span className="athlete-stats">
+                {athlete.sex && <span className="athlete-stat">{athlete.sex === 'M' ? 'Male' : 'Female'}</span>}
+                {athlete.weight && <span className="athlete-stat">{athlete.weight} kg</span>}
+              </span>
+              <span className="athlete-age-wrapper">
+                <label className="athlete-age-label">Age:</label>
+                <input
+                  type="number"
+                  className="athlete-age-input"
+                  min={10}
+                  max={120}
+                  value={userAge ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                    setUserAge(v);
+                    localStorage.setItem('marathon_match_age', v ?? '');
+                  }}
+                  placeholder="—"
+                />
+              </span>
             </div>
           )}
         </div>

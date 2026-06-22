@@ -152,6 +152,51 @@ body {
   gap: 8px;
   color: var(--text-muted);
   font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.athlete-name {
+  white-space: nowrap;
+}
+
+.athlete-stats {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.athlete-stat {
+  background: var(--bg-tertiary);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.athlete-age-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.athlete-age-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.athlete-age-input {
+  width: 48px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+}
+
+.athlete-age-input::placeholder {
+  color: var(--text-muted);
 }
 
 .athlete-avatar {

@@ -8,14 +8,26 @@ function riegelProjection(timeSeconds, distanceKm, targetDistanceKm) {
   return timeSeconds * factor;
 }
 
-function elevationFactor(userElevPerKm, courseElevPerKm, difficulty) {
+function elevationFactor(userElevPerKm, courseElevPerKm, difficulty, weightKg) {
   const flatBase = 10;
   const userEffort = userElevPerKm / flatBase;
   const courseEffort = courseElevPerKm / flatBase;
   const elevationRatio = courseEffort > 0
     ? Math.max(0.85, Math.min(1.25, userEffort / courseEffort))
     : 1;
-  return (elevationRatio * difficulty);
+
+  const w = weightKg || 70;
+  const weightPenalty = w > 0 ? 1 + (w - 70) / 70 * 0.12 * (courseElevPerKm / 15) : 1;
+
+  return (elevationRatio * difficulty * weightPenalty);
+}
+
+function ageAdjustment(age, targetDistanceKm) {
+  if (!age || age < 18) return 1;
+  if (age <= 27) return 1;
+  const yearsAbovePeak = age - 27;
+  const factor = 1 + (yearsAbovePeak / 100) * 0.4 * Math.min(3, targetDistanceKm / 21);
+  return factor;
 }
 
 function endurancePenalty(userDistanceKm, targetDistanceKm) {
@@ -54,7 +66,7 @@ function formatPace(secondsPerKm) {
   return paceDisplay(secondsPerKm);
 }
 
-function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse, userTempC, paceAnalysis) {
+function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse, userTempC, paceAnalysis, athlete) {
   const rawPace = runDurationSec / runDistanceKm;
 
   const effectivePace = (paceAnalysis && paceAnalysis.hasGAP && paceAnalysis.avgGAPSec)
@@ -68,11 +80,17 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
   const userElevPerKm = runElevationGain / runDistanceKm;
   const courseElevPerKm = targetCourse.elevationGain / targetCourse.distanceKm;
 
+  const userWeight = athlete?.weight || null;
+
   const elevFactor = elevationFactor(
     userElevPerKm,
     courseElevPerKm,
-    targetCourse.difficulty
+    targetCourse.difficulty,
+    userWeight
   );
+
+  const ageVal = athlete?.age || null;
+  const ageFactor = ageAdjustment(ageVal, targetCourse.distanceKm);
 
   const elevRatio = courseElevPerKm > 0
     ? Math.max(0.85, Math.min(1.25, (userElevPerKm / 10) / (courseElevPerKm / 10)))
@@ -92,7 +110,7 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     ? fadeEnduranceFactor(paceAnalysis.paceFadePct, runDistanceKm, targetCourse.distanceKm)
     : 1;
 
-  const projectedTime = baseProjectedSec * elevFactor * endurance * weatherFactor * fadeFactor;
+  const projectedTime = baseProjectedSec * elevFactor * endurance * weatherFactor * fadeFactor * ageFactor;
   const projectedPace = projectedTime / targetCourse.distanceKm;
 
   return {
@@ -129,7 +147,10 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     diffVsRunPct,
     userElevPerKm,
     courseElevPerKm,
+    userWeight,
+    userAge: ageVal,
+    ageFactor,
   };
 }
 
-export { projectRun, riegelProjection, elevationFactor, endurancePenalty, getRelevance, paceDisplay, timeDisplay, formatPace };
+export { projectRun, riegelProjection, elevationFactor, endurancePenalty, getRelevance, paceDisplay, timeDisplay, formatPace, ageAdjustment };
