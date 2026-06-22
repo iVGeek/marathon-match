@@ -20,7 +20,16 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentToken, setCurrentToken] = useState(token);
+  const normalizeToken = (t) => {
+    if (!t) return null;
+    return {
+      accessToken: t.accessToken || t.access_token,
+      refreshToken: t.refreshToken || t.refresh_token,
+      expiresAt: t.expiresAt || t.expires_at,
+      athlete: t.athlete || null,
+    };
+  };
+  const [currentToken, setCurrentToken] = useState(() => normalizeToken(token));
   const [inputMode, setInputMode] = useState('strava');
 
   const ensureValidToken = useCallback(async (tok) => {
@@ -86,10 +95,12 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
             if (analysis && parsed.splits) {
               analysis._rawSplits = parsed.splits;
             }
+          } else if (parsed.splits) {
+            console.warn('Activity has splits array but it is empty:', activity.id);
           }
         }
-      } catch {
-        /* detail fetch is optional, fall back to list data */
+      } catch (err) {
+        console.error('Activity detail fetch failed:', err?.message || err);
       } finally {
         setDetailLoading(false);
       }
@@ -192,6 +203,9 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
               )}
 
               {paceAnalysis && <PaceAnalysis analysis={paceAnalysis} />}
+              {!detailLoading && selectedActivity && !selectedActivity.isManual && !paceAnalysis && (
+                <div className="section"><p className="text-muted">No split data available for this activity (may need GPS data or longer run). Showing projections based on average pace.</p></div>
+              )}
 
               <EquivTimes activity={selectedActivity} analysis={paceAnalysis} />
               {projections.length > 0 && (

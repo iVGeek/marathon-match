@@ -23,6 +23,7 @@ export function clearToken() {
 }
 
 export function isTokenExpired(token) {
+  if (!token || !token.expiresAt) return true;
   return Date.now() / 1000 >= token.expiresAt;
 }
 
