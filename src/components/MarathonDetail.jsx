@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { paceDisplay, timeDisplay } from '../utils/projections';
 import { checkBQ } from '../utils/standardDistances';
+import ElevationChart from './ElevationChart';
 
 function relevanceBadge(relevance) {
   const styles = {
@@ -94,7 +95,10 @@ export default function MarathonDetail({ projection, onBack }) {
             <span className="tag">{p.surface}</span>
             <span className="tag">Difficulty: {p.difficulty.toFixed(2)}x</span>
             <span className="tag">{p.distanceKm} km</span>
+            {p.endurancePenalty > 1 && <span className="tag">+{((p.endurancePenalty - 1) * 100).toFixed(0)}% endurance adj</span>}
           </div>
+
+          <ElevationChart courseId={p.courseId} distanceKm={p.distanceKm} color={p.color} />
 
           {p.endurancePenalty > 1 && (
             <div className="endurance-note">

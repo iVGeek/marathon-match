@@ -5,6 +5,7 @@ import ManualInput from './ManualInput';
 import EquivTimes from './EquivTimes';
 import MarathonGrid from './MarathonGrid';
 import MarathonDetail from './MarathonDetail';
+import PaceBand from './PaceBand';
 import { projectRun } from '../utils/projections';
 import { allCourses } from '../utils/marathonData';
 
@@ -146,6 +147,8 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
               )}
             </>
           )}
+
+          <PaceBand />
         </>
       )}
     </div>

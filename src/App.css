@@ -1099,3 +1099,152 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.2);
   color: var(--negative);
 }
+
+/* Elevation Chart */
+.elevation-chart {
+  margin: 16px 0;
+  height: 120px;
+  width: 100%;
+}
+
+/* Pace Band */
+.paceband-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  width: fit-content;
+}
+
+.paceband-tab {
+  padding: 8px 18px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.paceband-tab.active {
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+.paceband-tab:hover:not(.active) {
+  color: var(--text);
+}
+
+.paceband-inputs {
+  max-width: 600px;
+}
+
+.paceband-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.paceband-field label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.paceband-btn {
+  padding: 8px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.paceband-btn:hover {
+  background: var(--accent-hover);
+}
+
+.paceband-results {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.paceband-result-card {
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  flex: 1;
+}
+
+.paceband-result-card.highlight {
+  border-color: rgba(252, 76, 2, 0.3);
+}
+
+.pr-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.pr-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.paceband-table {
+  margin-top: 8px;
+}
+
+.pb-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.pb-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pb-row:last-child {
+  border-bottom: none;
+}
+
+.pb-label {
+  font-weight: 500;
+}
+
+.pb-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}

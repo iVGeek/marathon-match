@@ -8,6 +8,10 @@ const standardDistances = [
   { id: '30k', name: '30K', distanceKm: 30 },
   { id: 'marathon', name: 'Marathon', distanceKm: 42.195 },
   { id: '50k', name: '50K (Ultra)', distanceKm: 50 },
+  { id: '50mi', name: '50 Miles', distanceKm: 80.467 },
+  { id: '100k', name: '100K', distanceKm: 100 },
+  { id: '100mi', name: '100 Miles', distanceKm: 160.934 },
+  { id: '250k', name: '250K (Multi-stage)', distanceKm: 250 },
 ];
 
 const bqStandards = {
