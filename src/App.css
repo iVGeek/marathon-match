@@ -412,6 +412,57 @@ body {
 }
 
 /* Grid */
+.segment-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.segment-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.segment-tab.active {
+  background: rgba(252, 76, 2, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.segment-tab:hover:not(.active) {
+  background: var(--bg-elevated);
+}
+
+.segment-icon {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.segment-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(128, 128, 128, 0.12);
+  padding: 1px 6px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.segment-tab.active .segment-count {
+  background: rgba(252, 76, 2, 0.15);
+}
+
 .grid-header {
   display: grid;
   grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr;
