@@ -93,6 +93,7 @@ export default function MarathonGrid({ projections, onSelect }) {
             <span className="grid-cell relev">Relevance</span>
             <span className="grid-cell diff">Difficulty</span>
             <span className="grid-cell adj">vs Your Pace</span>
+            <span className="grid-cell winner">Winner</span>
           </div>
 
           <div className="grid-body">
@@ -135,6 +136,13 @@ export default function MarathonGrid({ projections, onSelect }) {
                   </span>
                   <span className={`grid-cell adj ${isFaster ? 'faster' : 'slower'}`}>
                     {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
+                  </span>
+                  <span className="grid-cell winner">
+                    {(() => {
+                      const r = estimateRank(p.projectedTimeSec, p.courseId);
+                      if (!r) return null;
+                      return <span className="winner-pace">{paceDisplay(r.winnerTimeSec / p.distanceKm)}/km</span>;
+                    })()}
                   </span>
                 </button>
               );

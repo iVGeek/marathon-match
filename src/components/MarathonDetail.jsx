@@ -180,7 +180,7 @@ export default function MarathonDetail({ projection, onBack }) {
                 </div>
                 <div className="ranking-stat">
                   <span className="ranking-label">Race Winner ({rankYear || '2025'})</span>
-                  <span className="ranking-value">{rank.winnerName} — {timeDisplay(rank.winnerTimeSec)}</span>
+                  <span className="ranking-value">{rank.winnerName} — {timeDisplay(rank.winnerTimeSec)} <span className="winner-pace">({paceDisplay(rank.winnerTimeSec / p.distanceKm)}/km)</span></span>
                 </div>
               </div>
             </div>

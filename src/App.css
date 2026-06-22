@@ -510,7 +510,7 @@ body {
 
 .grid-header {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr 0.9fr;
   gap: 6px;
   padding: 8px 12px;
   font-size: 11px;
@@ -528,7 +528,7 @@ body {
 
 .grid-row {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr 0.9fr;
   gap: 6px;
   padding: 10px 12px;
   font-size: 13px;
@@ -568,8 +568,15 @@ body {
 .grid-cell.rank,
 .grid-cell.relev,
 .grid-cell.diff,
-.grid-cell.adj {
+.grid-cell.adj,
+.grid-cell.winner {
   font-variant-numeric: tabular-nums;
+}
+
+.winner-pace {
+  font-size: 12px;
+  color: var(--accent);
+  white-space: nowrap;
 }
 
 .course-dot {
