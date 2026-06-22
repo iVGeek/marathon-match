@@ -121,8 +121,8 @@ export default function MarathonGrid({ projections, onSelect }) {
               </span>
               <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>
               <span className="grid-cell diff">
-                <span className={`diff-badge ${p.difficulty >= 1.2 ? 'hard' : p.difficulty >= 1.05 ? 'moderate' : 'easy'}`}>
-                  {p.difficulty.toFixed(2)}x
+                <span className={`diff-badge ${p.diffVsRun === 'More' ? 'hard' : p.diffVsRun === 'Less' ? 'easy' : 'moderate'}`}>
+                  {p.diffVsRun === 'Less' ? `Less (${p.diffVsRunPct.toFixed(0)}% easier)` : p.diffVsRun === 'More' ? `More (${p.diffVsRunPct.toFixed(0)}% harder)` : 'Similar'}
                 </span>
               </span>
               <span className={`grid-cell adj ${isFaster ? 'faster' : 'slower'}`}>

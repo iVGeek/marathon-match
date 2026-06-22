@@ -99,7 +99,7 @@ export default function MarathonDetail({ projection, onBack }) {
           <p>{p.description}</p>
           <div className="detail-tags">
             <span className="tag">{p.surface}</span>
-            <span className="tag">Difficulty: {p.difficulty.toFixed(2)}x</span>
+            <span className="tag">{p.diffVsRun === 'Less' ? `Easier (${p.diffVsRunPct.toFixed(0)}% less)` : p.diffVsRun === 'More' ? `Harder (${p.diffVsRunPct.toFixed(0)}% more)` : 'Similar difficulty'}</span>
             <span className="tag">{p.distanceKm} km</span>
             {p.endurancePenalty > 1 && <span className="tag">+{((p.endurancePenalty - 1) * 100).toFixed(0)}% endurance adj</span>}
           </div>

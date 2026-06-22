@@ -85,8 +85,12 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
       setDetailLoading(true);
       try {
         const accessToken = await ensureValidToken(currentToken);
-        if (accessToken) {
+        if (!accessToken) {
+          console.warn('No valid access token for detail fetch');
+        } else {
+          console.log('Fetching detail for activity', activity.id);
           const detail = await fetchActivityDetail(accessToken, activity.id);
+          console.log('Detail response has splits_metric?', !!detail?.splits_metric, 'count:', detail?.splits_metric?.length);
           const parsed = parseActivityDetail(detail);
           effectiveActivity = parsed;
 
@@ -205,7 +209,7 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
 
               {paceAnalysis && <PaceAnalysis analysis={paceAnalysis} />}
               {!detailLoading && selectedActivity && !selectedActivity.isManual && !paceAnalysis && (
-                <div className="section"><p className="text-muted">No split data available for this activity (may need GPS data or longer run). Showing projections based on average pace.</p></div>
+                <div className="section"><p className="text-muted">No per-km split data from Strava for this activity. Check browser console (F12) — if you see <code>splits_metric</code> count: 0, the activity may lack GPS data or be too short. Projections use average pace.</p></div>
               )}
 
               <EquivTimes activity={selectedActivity} analysis={paceAnalysis} />

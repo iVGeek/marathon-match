@@ -65,11 +65,20 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
 
   const baseProjectedSec = riegelProjection(effectiveDuration, runDistanceKm, targetCourse.distanceKm);
 
+  const userElevPerKm = runElevationGain / runDistanceKm;
+  const courseElevPerKm = targetCourse.elevationGain / targetCourse.distanceKm;
+
   const elevFactor = elevationFactor(
-    runElevationGain / runDistanceKm,
-    targetCourse.elevationGain / targetCourse.distanceKm,
+    userElevPerKm,
+    courseElevPerKm,
     targetCourse.difficulty
   );
+
+  const elevRatio = courseElevPerKm > 0
+    ? Math.max(0.85, Math.min(1.25, (userElevPerKm / 10) / (courseElevPerKm / 10)))
+    : 1;
+  const diffVsRun = elevRatio < 1 ? 'Less' : elevRatio > 1 ? 'More' : 'Similar';
+  const diffVsRunPct = Math.abs(elevRatio - 1) * 100;
 
   const endurance = endurancePenalty(runDistanceKm, targetCourse.distanceKm);
   const relevance = getRelevance(runDistanceKm, targetCourse.distanceKm);
@@ -116,6 +125,10 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     userTemperature: userTempC,
     fadeFactor,
     paceFadePct: paceAnalysis ? paceAnalysis.paceFadePct : null,
+    diffVsRun,
+    diffVsRunPct,
+    userElevPerKm,
+    courseElevPerKm,
   };
 }
 
