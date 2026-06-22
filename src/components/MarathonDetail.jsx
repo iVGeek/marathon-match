@@ -179,8 +179,12 @@ export default function MarathonDetail({ projection, onBack }) {
                   <span className="ranking-value">{Math.max(0, 100 - parseFloat(rank.topPct)).toFixed(0)}% of finishers</span>
                 </div>
                 <div className="ranking-stat">
-                  <span className="ranking-label">Race Winner ({rankYear || '2025'})</span>
+                  <span className="ranking-label">Men's Winner ({rankYear || '2025'})</span>
                   <span className="ranking-value">{rank.winnerName} — {timeDisplay(rank.winnerTimeSec)} <span className="winner-pace">({paceDisplay(rank.winnerTimeSec / p.distanceKm)}/km)</span></span>
+                </div>
+                <div className="ranking-stat">
+                  <span className="ranking-label">Women's Winner ({rankYear || '2025'})</span>
+                  <span className="ranking-value">{rank.winnerWomenName} — {timeDisplay(rank.winnerWomenTimeSec)} <span className="winner-pace">({paceDisplay(rank.winnerWomenTimeSec / p.distanceKm)}/km)</span></span>
                 </div>
               </div>
             </div>
