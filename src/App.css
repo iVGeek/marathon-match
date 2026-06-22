@@ -176,11 +176,11 @@ body {
 .rank-badge {
   font-size: 11px;
   font-weight: 700;
-  color: var(--accent);
   background: rgba(252, 76, 2, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
   white-space: nowrap;
+  border: 1px solid transparent;
 }
 
 .ranking-info {

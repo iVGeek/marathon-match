@@ -113,7 +113,10 @@ export default function MarathonGrid({ projections, onSelect }) {
               <span className="grid-cell rank">
                 {(() => {
                   const r = estimateRank(p.projectedTimeSec, p.courseId);
-                  return r ? <span className="rank-badge">#{r.position.toLocaleString()}</span> : null;
+                  if (!r) return null;
+                  const rankColor = r.topPct <= 5 ? '#27ae60' : r.topPct <= 10 ? '#2ecc71' : r.topPct <= 25 ? 'var(--accent)' : '#888';
+                  const rankLabel = r.topPct <= 1 ? 'ELITE' : r.topPct <= 5 ? `Top ${r.topPct}%` : `#${r.position.toLocaleString()}`;
+                  return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankLabel}</span>;
                 })()}
               </span>
               <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>

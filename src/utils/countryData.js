@@ -8,12 +8,13 @@ const countryNames = {
 };
 
 export function countryFlag(code) {
-  if (!code) return '';
+  if (!code || code.length !== 2) return '';
   const base = 0x1F1E6;
   return String.fromCodePoint(base + (code.charCodeAt(0) - 65), base + (code.charCodeAt(1) - 65));
 }
 
 export function countryName(code) {
+  if (!code) return '';
   return countryNames[code] || code;
 }
 

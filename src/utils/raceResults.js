@@ -1,57 +1,97 @@
-const courseResults = {
-  berlin:       { year: 2025, winnerTimeSec: 11940, finishers: 54280, winnerName: 'Milkesa Mengesha', menField: 35920, womenField: 18360 },
-  boston:       { year: 2025, winnerTimeSec: 12492, finishers: 26169, winnerName: 'John Korir', menField: 14760, womenField: 11409 },
-  london:       { year: 2025, winnerTimeSec: 11885, finishers: 53259, winnerName: 'Sabastian Sawe', menField: 33128, womenField: 20131 },
-  chicago:      { year: 2025, winnerTimeSec: 12207, finishers: 47869, winnerName: 'John Korir', menField: 26152, womenField: 21717 },
-  nyc:          { year: 2025, winnerTimeSec: 12934, finishers: 52966, winnerName: 'Abdi Nageeye', menField: 30314, womenField: 22652 },
-  tokyo:        { year: 2025, winnerTimeSec: 11972, finishers: 37595, winnerName: 'Tadese Takele', menField: 27543, womenField: 10052 },
-  bigsur:       { year: 2024, winnerTimeSec: 16592, finishers: 4515, winnerName: 'Zachary Stetler', menField: 2409, womenField: 2106 },
-  paris:        { year: 2025, winnerTimeSec: 12138, finishers: 54099, winnerName: 'Enock Onchari', menField: 38798, womenField: 15301 },
-  amsterdam:    { year: 2024, winnerTimeSec: 12239, finishers: 21343, winnerName: 'Tsegaye Getachew', menField: 17346, womenField: 3997 },
-  rome:         { year: 2025, winnerTimeSec: 12765, finishers: 19943, winnerName: 'Adel Beri', menField: 15397, womenField: 4546 },
-  valencia:     { year: 2025, winnerTimeSec: 11799, finishers: 32751, winnerName: 'Jacob Kiplimo', menField: 27981, womenField: 4770 },
-  prague:       { year: 2025, winnerTimeSec: 12537, finishers: 17073, winnerName: 'Geofry Toroitich', menField: 13658, womenField: 3415 },
-  'marina-bay': { year: 2024, winnerTimeSec: 13194, finishers: 15424, winnerName: 'Geoffrey Yegon', menField: 11568, womenField: 3856 },
-  vienna:       { year: 2024, winnerTimeSec: 12536, finishers: 10806, winnerName: 'Hezron Mwangeka', menField: 9008, womenField: 1798 },
-  copenhagen:   { year: 2024, winnerTimeSec: 12682, finishers: 17590, winnerName: 'Kelvin Kibet', menField: 12753, womenField: 4837 },
-  geneva:       { year: 2024, winnerTimeSec: 13563, finishers: 8565, winnerName: 'Edwin Kipngetich', menField: 6889, womenField: 1676 },
-  barcelona:    { year: 2025, winnerTimeSec: 12768, finishers: 19119, winnerName: 'Mukisa Kimutai', menField: 15271, womenField: 3848 },
-  dublin:       { year: 2024, winnerTimeSec: 13098, finishers: 22261, winnerName: 'Simon Grønberge', menField: 15533, womenField: 6728 },
-  marrakech:    { year: 2024, winnerTimeSec: 13185, finishers: 8562, winnerName: 'Berhanu Bekele', menField: 6943, womenField: 1619 },
-  reykjavik:    { year: 2024, winnerTimeSec: 13715, finishers: 3804, winnerName: 'Donald Kibet', menField: 2712, womenField: 1092 },
-  greek:        { year: 2024, winnerTimeSec: 12960, finishers: 18913, winnerName: 'Fikiru Merga', menField: 15029, womenField: 3884 },
-  'berlin-half':   { year: 2025, winnerTimeSec: 3540, finishers: 36291, winnerName: 'Jimmy Gressier', menField: 23069, womenField: 13222 },
-  'boston-half':   { year: 2024, winnerTimeSec: 3655, finishers: 9316, winnerName: 'Abbott Kiplagat', menField: 5002, womenField: 4314 },
-  'nyc-half':      { year: 2025, winnerTimeSec: 3601, finishers: 24736, winnerName: 'Abdi Nageeye', menField: 12264, womenField: 12472 },
-  'lisbon-half':   { year: 2024, winnerTimeSec: 3536, finishers: 13187, winnerName: 'Andamlak Bilih', menField: 9765, womenField: 3422 },
-  'prague-half':   { year: 2024, winnerTimeSec: 3602, finishers: 9815, winnerName: 'Tsegay Misgina', menField: 7034, womenField: 2781 },
-  'valencia-half': { year: 2024, winnerTimeSec: 3507, finishers: 13240, winnerName: 'Yomif Kejelcha', menField: 10963, womenField: 2277 },
-  'golden-gate-half': { year: 2024, winnerTimeSec: 3850, finishers: 5650, winnerName: 'Sammy Fell', menField: 2825, womenField: 2825 },
-  'comrades-down': { year: 2024, winnerTimeSec: 31290, finishers: 16124, winnerName: 'Piet Wiersma', menField: 12899, womenField: 3225 },
-  'comrades-up':   { year: 2025, winnerTimeSec: 32611, finishers: 15208, winnerName: 'Dan Carlsson', menField: 12166, womenField: 3042 },
-  'two-oceans':    { year: 2025, winnerTimeSec: 19265, finishers: 11312, winnerName: 'Lungile Gongqa', menField: 7921, womenField: 3391 },
-  ccc:             { year: 2024, winnerTimeSec: 35140, finishers: 2923, winnerName: 'Danny van der Kleij', menField: 2270, womenField: 653 },
-  utmb:            { year: 2025, winnerTimeSec: 71000, finishers: 2760, winnerName: 'Kilian Jornet', menField: 2210, womenField: 550 },
-  'western-states': { year: 2024, winnerTimeSec: 52101, finishers: 386, winnerName: 'Chris Kelly', menField: 297, womenField: 89 },
-  leadville:       { year: 2025, winnerTimeSec: 56320, finishers: 624, winnerName: 'Austin Gann', menField: 502, womenField: 122 },
-  tarawera:        { year: 2025, winnerTimeSec: 30708, finishers: 1782, winnerName: 'Devon Portmann', menField: 1212, womenField: 570 },
-  'marathon-des-sables': { year: 2024, winnerTimeSec: 80640, finishers: 1287, winnerName: 'Rachid El Morabity', menField: 1094, womenField: 193 },
+function ln(x) { return Math.log(x); }
+
+function phi(x) {
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
+  const sign = x < 0 ? -1 : 1;
+  x = Math.abs(x);
+  const t = 1 / (1 + p * x);
+  const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  return 0.5 * (1 + sign * y);
+}
+
+function logNormalCDF(x, mu, sigma) {
+  if (x <= 0) return 0;
+  return phi((ln(x) - mu) / sigma);
+}
+
+const courses = {
+  marathon: {
+    berlin:   { year: 2025, mu: 9.62, sigma: 0.38, finishers: 54280, winnerName: 'Milkesa Mengesha', winnerTimeSec: 11940 },
+    london:   { year: 2025, mu: 9.64, sigma: 0.40, finishers: 53259, winnerName: 'Sabastian Sawe', winnerTimeSec: 11885 },
+    boston:   { year: 2025, mu: 9.72, sigma: 0.42, finishers: 26169, winnerName: 'John Korir', winnerTimeSec: 12492 },
+    chicago:  { year: 2025, mu: 9.60, sigma: 0.38, finishers: 47869, winnerName: 'John Korir', winnerTimeSec: 12207 },
+    nyc:      { year: 2025, mu: 9.75, sigma: 0.40, finishers: 52966, winnerName: 'Abdi Nageeye', winnerTimeSec: 12934 },
+    tokyo:    { year: 2025, mu: 9.65, sigma: 0.39, finishers: 37595, winnerName: 'Tadese Takele', winnerTimeSec: 11972 },
+    bigsur:   { year: 2024, mu: 9.85, sigma: 0.35, finishers: 4515, winnerName: 'Zachary Stetler', winnerTimeSec: 16592 },
+    paris:    { year: 2025, mu: 9.66, sigma: 0.40, finishers: 54099, winnerName: 'Enock Onchari', winnerTimeSec: 12138 },
+    amsterdam:{ year: 2024, mu: 9.63, sigma: 0.38, finishers: 21343, winnerName: 'Tsegaye Getachew', winnerTimeSec: 12239 },
+    rome:     { year: 2025, mu: 9.74, sigma: 0.38, finishers: 19943, winnerName: 'Adel Beri', winnerTimeSec: 12765 },
+    valencia: { year: 2025, mu: 9.58, sigma: 0.37, finishers: 32751, winnerName: 'Jacob Kiplimo', winnerTimeSec: 11799 },
+    prague:   { year: 2025, mu: 9.71, sigma: 0.38, finishers: 17073, winnerName: 'Geofry Toroitich', winnerTimeSec: 12537 },
+    'marina-bay': { year: 2024, mu: 9.76, sigma: 0.38, finishers: 15424, winnerName: 'Geoffrey Yegon', winnerTimeSec: 13194 },
+    vienna:   { year: 2024, mu: 9.72, sigma: 0.37, finishers: 10806, winnerName: 'Hezron Mwangeka', winnerTimeSec: 12536 },
+    copenhagen:{ year: 2024, mu: 9.70, sigma: 0.37, finishers: 17590, winnerName: 'Kelvin Kibet', winnerTimeSec: 12682 },
+    geneva:   { year: 2024, mu: 9.78, sigma: 0.36, finishers: 8565, winnerName: 'Edwin Kipngetich', winnerTimeSec: 13563 },
+    barcelona:{ year: 2025, mu: 9.73, sigma: 0.38, finishers: 19119, winnerName: 'Mukisa Kimutai', winnerTimeSec: 12768 },
+    dublin:   { year: 2024, mu: 9.72, sigma: 0.37, finishers: 22261, winnerName: 'Simon Grønberge', winnerTimeSec: 13098 },
+    marrakech:{ year: 2024, mu: 9.75, sigma: 0.36, finishers: 8562, winnerName: 'Berhanu Bekele', winnerTimeSec: 13185 },
+    reykjavik:{ year: 2024, mu: 9.80, sigma: 0.35, finishers: 3804, winnerName: 'Donald Kibet', winnerTimeSec: 13715 },
+    greek:    { year: 2024, mu: 9.78, sigma: 0.40, finishers: 18913, winnerName: 'Fikiru Merga', winnerTimeSec: 12960 },
+  },
+  half: {
+    'berlin-half':   { year: 2025, mu: 8.82, sigma: 0.38, finishers: 36291, winnerName: 'Jimmy Gressier', winnerTimeSec: 3540 },
+    'boston-half':   { year: 2024, mu: 8.88, sigma: 0.38, finishers: 9316, winnerName: 'Abbott Kiplagat', winnerTimeSec: 3655 },
+    'nyc-half':      { year: 2025, mu: 8.86, sigma: 0.39, finishers: 24736, winnerName: 'Abdi Nageeye', winnerTimeSec: 3601 },
+    'lisbon-half':   { year: 2024, mu: 8.80, sigma: 0.37, finishers: 13187, winnerName: 'Andamlak Bilih', winnerTimeSec: 3536 },
+    'prague-half':   { year: 2024, mu: 8.85, sigma: 0.37, finishers: 9815, winnerName: 'Tsegay Misgina', winnerTimeSec: 3602 },
+    'valencia-half': { year: 2024, mu: 8.78, sigma: 0.36, finishers: 13240, winnerName: 'Yomif Kejelcha', winnerTimeSec: 3507 },
+    'golden-gate-half': { year: 2024, mu: 8.94, sigma: 0.35, finishers: 5650, winnerName: 'Sammy Fell', winnerTimeSec: 3850 },
+  },
+  ultra: {
+    'comrades-down':   { year: 2024, mu: 10.58, sigma: 0.30, finishers: 16124, winnerName: 'Piet Wiersma', winnerTimeSec: 31290 },
+    'comrades-up':     { year: 2025, mu: 10.64, sigma: 0.30, finishers: 15208, winnerName: 'Dan Carlsson', winnerTimeSec: 32611 },
+    'two-oceans':      { year: 2025, mu: 10.12, sigma: 0.32, finishers: 11312, winnerName: 'Lungile Gongqa', winnerTimeSec: 19265 },
+    ccc:               { year: 2024, mu: 10.77, sigma: 0.35, finishers: 2923, winnerName: 'Danny van der Kleij', winnerTimeSec: 35140 },
+    utmb:              { year: 2025, mu: 11.37, sigma: 0.33, finishers: 2760, winnerName: 'Kilian Jornet', winnerTimeSec: 71000 },
+    'western-states':  { year: 2024, mu: 11.15, sigma: 0.30, finishers: 386, winnerName: 'Chris Kelly', winnerTimeSec: 52101 },
+    leadville:         { year: 2025, mu: 11.22, sigma: 0.30, finishers: 624, winnerName: 'Austin Gann', winnerTimeSec: 56320 },
+    tarawera:          { year: 2025, mu: 10.59, sigma: 0.33, finishers: 1782, winnerName: 'Devon Portmann', winnerTimeSec: 30708 },
+    'marathon-des-sables': { year: 2024, mu: 11.50, sigma: 0.28, finishers: 1287, winnerName: 'Rachid El Morabity', winnerTimeSec: 80640 },
+  },
 };
 
+const byId = {};
+for (const cat of [courses.marathon, courses.half, courses.ultra]) {
+  for (const [id, data] of Object.entries(cat)) {
+    byId[id] = data;
+  }
+}
+
 export function getResults(courseId) {
-  return courseResults[courseId] || null;
+  return byId[courseId] || null;
 }
 
 export function estimateRank(projectedTimeSec, courseId) {
-  const results = courseResults[courseId];
-  if (!results || !projectedTimeSec) return null;
-  const fasterFraction = Math.max(0, Math.min(1, 1 - (projectedTimeSec - results.winnerTimeSec) / (results.finishers * 0.1)));
-  const estimatedPosition = Math.round(results.finishers * fasterFraction);
+  const c = byId[courseId];
+  if (!c || !projectedTimeSec) return null;
+
+  const percentile = Math.min(0.999, logNormalCDF(projectedTimeSec, c.mu, c.sigma));
+  const position = Math.max(1, Math.round(percentile * c.finishers));
+
+  const total = c.finishers;
+  const pct = ((position / total) * 100).toFixed(1);
+
   return {
-    position: Math.max(1, estimatedPosition),
-    totalFinishers: results.finishers,
-    topPct: ((Math.max(1, estimatedPosition) / results.finishers) * 100).toFixed(1),
-    winnerName: results.winnerName,
-    winnerTimeSec: results.winnerTimeSec,
+    position,
+    totalFinishers: total,
+    topPct: pct,
+    percentile: (percentile * 100).toFixed(1),
+    winnerName: c.winnerName,
+    winnerTimeSec: c.winnerTimeSec,
   };
 }

@@ -46,6 +46,7 @@ export default function MarathonDetail({ projection, onBack }) {
 
   const results = getResults(p.courseId);
   const rank = estimateRank(p.projectedTimeSec, p.courseId);
+  const rankYear = results?.year;
 
   const numSplits = Math.ceil(p.distanceKm / 5);
   const splits = Array.from({ length: numSplits }, (_, i) => {
@@ -142,19 +143,21 @@ export default function MarathonDetail({ projection, onBack }) {
 
           {rank && (
             <div className="ranking-info">
-              <div className="ranking-header">Race Ranking Estimate</div>
+              <div className="ranking-header">Race Ranking Estimate — {p.courseName} {p.country ? countryFlag(p.country) : ''}</div>
               <div className="ranking-details">
                 <div className="ranking-stat">
-                  <span className="ranking-label">Projected position</span>
-                  <span className="ranking-value">#{rank.position.toLocaleString()} of {rank.totalFinishers.toLocaleString()}</span>
+                  <span className="ranking-label">Projected Position</span>
+                  <span className="ranking-value" style={{ fontSize: 20, color: rank.topPct <= 10 ? 'var(--positive)' : rank.topPct <= 25 ? 'var(--accent)' : 'var(--text)' }}>
+                    #{rank.position.toLocaleString()} / {rank.totalFinishers.toLocaleString()}
+                  </span>
                 </div>
                 <div className="ranking-stat">
-                  <span className="ranking-label">Top</span>
-                  <span className="ranking-value">{rank.topPct}%</span>
+                  <span className="ranking-label">Faster Than</span>
+                  <span className="ranking-value">{Math.max(0, 100 - parseFloat(rank.topPct)).toFixed(0)}% of finishers</span>
                 </div>
                 <div className="ranking-stat">
-                  <span className="ranking-label">{rank.totalFinishers > 10000 ? rank.totalFinishers.toLocaleString() : ''} finishers</span>
-                  <span className="ranking-value">{rank.winnerName} won in {timeDisplay(rank.winnerTimeSec)}</span>
+                  <span className="ranking-label">Race Winner ({rankYear || '2025'})</span>
+                  <span className="ranking-value">{rank.winnerName} — {timeDisplay(rank.winnerTimeSec)}</span>
                 </div>
               </div>
             </div>
