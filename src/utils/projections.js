@@ -5,22 +5,31 @@ function riegelProjection(timeSeconds, distanceKm, targetDistanceKm) {
   return timeSeconds * factor;
 }
 
-function elevationFactor(userElevationPerKm, courseElevationPerKm, difficulty) {
+function elevationFactor(userElevPerKm, courseElevPerKm, difficulty) {
   const flatBase = 10;
-  const userEffort = userElevationPerKm / flatBase;
-  const courseEffort = courseElevationPerKm / flatBase;
+  const userEffort = userElevPerKm / flatBase;
+  const courseEffort = courseElevPerKm / flatBase;
   const elevationRatio = courseEffort > 0
     ? Math.max(0.85, Math.min(1.25, userEffort / courseEffort))
     : 1;
   return (elevationRatio * difficulty);
 }
 
-function temperatureFactor(userTemp, courseTemp) {
-  const optimalTemp = 12;
-  const uDiff = userTemp != null ? Math.abs(userTemp - optimalTemp) : 0;
-  const cDiff = courseTemp != null ? Math.abs(courseTemp - optimalTemp) : 0;
-  if (uDiff === 0 || cDiff === 0) return 1;
-  return 1 + Math.max(0, (cDiff - uDiff) * 0.003);
+function endurancePenalty(userDistanceKm, targetDistanceKm) {
+  const ratio = userDistanceKm / targetDistanceKm;
+  if (ratio >= 0.8) return 1.0;
+  if (ratio >= 0.5) return 1.04;
+  if (ratio >= 0.33) return 1.10;
+  if (ratio >= 0.2) return 1.18;
+  return 1.25;
+}
+
+function getRelevance(userDistanceKm, targetDistanceKm) {
+  const ratio = userDistanceKm / targetDistanceKm;
+  if (ratio >= 0.8) return { level: 'high', label: 'Very relevant', score: 3 };
+  if (ratio >= 0.5) return { level: 'medium', label: 'Relevant', score: 2 };
+  if (ratio >= 0.25) return { level: 'low', label: 'Approximate', score: 1 };
+  return { level: 'estimate', label: 'Rough estimate', score: 0 };
 }
 
 function paceDisplay(secondsPerKm) {
@@ -53,7 +62,10 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     targetCourse.difficulty
   );
 
-  const projectedTime = baseProjectedSec * elevFactor;
+  const endurance = endurancePenalty(runDistanceKm, targetCourse.distanceKm);
+  const relevance = getRelevance(runDistanceKm, targetCourse.distanceKm);
+
+  const projectedTime = baseProjectedSec * elevFactor * endurance;
   const projectedPace = projectedTime / targetCourse.distanceKm;
 
   return {
@@ -70,14 +82,15 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     projectedTime: timeDisplay(projectedTime),
     projectedPace: paceDisplay(projectedPace),
     projectedPaceSec: projectedPace,
-    predictedPaceSec: projectedPace,
     userPace: paceDisplay(userPace),
     userPaceSec: userPace,
     userDistance: runDistanceKm,
     userDuration: runDurationSec,
     userElevation: runElevationGain,
     adjustmentFactor: elevFactor,
+    endurancePenalty: endurance,
+    relevance,
   };
 }
 
-export { projectRun, riegelProjection, elevationFactor, paceDisplay, timeDisplay, formatPace };
+export { projectRun, riegelProjection, elevationFactor, endurancePenalty, getRelevance, paceDisplay, timeDisplay, formatPace };

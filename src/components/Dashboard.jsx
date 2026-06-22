@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchActivities, isRunningActivity, parseActivityStats, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
 import ActivitySelector from './ActivitySelector';
+import ManualInput from './ManualInput';
+import EquivTimes from './EquivTimes';
 import MarathonGrid from './MarathonGrid';
 import MarathonDetail from './MarathonDetail';
 import { projectRun } from '../utils/projections';
@@ -14,6 +16,7 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentToken, setCurrentToken] = useState(token);
+  const [inputMode, setInputMode] = useState('strava');
 
   const ensureValidToken = useCallback(async (tok) => {
     if (!isTokenExpired(tok)) return tok.accessToken;
@@ -104,18 +107,44 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
         <MarathonDetail projection={selectedProjection} onBack={handleBack} />
       ) : (
         <>
-          <ActivitySelector
-            activities={activities}
-            loading={loading}
-            selectedId={selectedActivity?.id}
-            onSelect={handleSelectActivity}
-          />
+          <div className="input-tabs">
+            <button
+              className={`input-tab ${inputMode === 'strava' ? 'active' : ''}`}
+              onClick={() => setInputMode('strava')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-3.526l-2.89-5.725H0l5.88 11.573 4.238-8.348m4.544 3.029l-2.89-5.725h-5.38l4.679 9.222 4.239-8.348z"/></svg>
+              Strava Activities
+            </button>
+            <button
+              className={`input-tab ${inputMode === 'manual' ? 'active' : ''}`}
+              onClick={() => setInputMode('manual')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
+              Manual Entry
+            </button>
+          </div>
 
-          {selectedActivity && projections.length > 0 && (
-            <MarathonGrid
-              projections={projections}
-              onSelect={handleSelectProjection}
+          {inputMode === 'strava' ? (
+            <ActivitySelector
+              activities={activities}
+              loading={loading}
+              selectedId={selectedActivity?.id}
+              onSelect={handleSelectActivity}
             />
+          ) : (
+            <ManualInput onRunSubmit={handleSelectActivity} />
+          )}
+
+          {selectedActivity && (
+            <>
+              <EquivTimes activity={selectedActivity} />
+              {projections.length > 0 && (
+                <MarathonGrid
+                  projections={projections}
+                  onSelect={handleSelectProjection}
+                />
+              )}
+            </>
           )}
         </>
       )}

@@ -5,9 +5,19 @@ const FILTERS = {
   all: 'All Courses',
   marathon: 'Marathons (42.2k)',
   half: 'Half Marathons (21.1k)',
-  flat: 'Flat (difficulty < 1.0)',
-  hilly: 'Hilly (difficulty ≥ 1.1)',
+  relevant: 'Most relevant first',
 };
+
+function relevanceBadge(relevance) {
+  const styles = {
+    high: { cls: 'rel-high', label: '★ Very relevant' },
+    medium: { cls: 'rel-medium', label: '● Relevant' },
+    low: { cls: 'rel-low', label: '◐ Approximate' },
+    estimate: { cls: 'rel-estimate', label: '○ Rough estimate' },
+  };
+  const s = styles[relevance.level] || styles.estimate;
+  return <span className={`rel-badge ${s.cls}`}>{s.label}</span>;
+}
 
 export default function MarathonGrid({ projections, onSelect }) {
   const [filter, setFilter] = useState('all');
@@ -17,8 +27,6 @@ export default function MarathonGrid({ projections, onSelect }) {
   const filtered = projections.filter((p) => {
     if (filter === 'marathon') return Math.abs(p.distanceKm - 42.195) < 0.01;
     if (filter === 'half') return Math.abs(p.distanceKm - 21.0975) < 0.01;
-    if (filter === 'flat') return p.difficulty < 1.0;
-    if (filter === 'hilly') return p.difficulty >= 1.1;
     return true;
   });
 
@@ -27,8 +35,17 @@ export default function MarathonGrid({ projections, onSelect }) {
     if (sort === 'pace') return a.projectedPaceSec - b.projectedPaceSec;
     if (sort === 'difficulty') return b.difficulty - a.difficulty;
     if (sort === 'name') return a.courseName.localeCompare(b.courseName);
+    if (sort === 'relevance') return b.relevance.score - a.relevance.score || a.projectedTimeSec - b.projectedTimeSec;
     return 0;
   });
+
+  const sortOptions = [
+    { value: 'relevance', label: 'Relevance' },
+    { value: 'time', label: 'Fastest Time' },
+    { value: 'pace', label: 'Fastest Pace' },
+    { value: 'difficulty', label: 'Hardest First' },
+    { value: 'name', label: 'Name A-Z' },
+  ];
 
   return (
     <div className="section">
@@ -49,10 +66,9 @@ export default function MarathonGrid({ projections, onSelect }) {
             value={sort}
             onChange={(e) => setSort(e.target.value)}
           >
-            <option value="time">Fastest Time</option>
-            <option value="pace">Fastest Pace</option>
-            <option value="difficulty">Hardest First</option>
-            <option value="name">Name A-Z</option>
+            {sortOptions.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -62,7 +78,7 @@ export default function MarathonGrid({ projections, onSelect }) {
         <span className="grid-cell dist">Distance</span>
         <span className="grid-cell time">Projected Time</span>
         <span className="grid-cell pace">Pace</span>
-        <span className="grid-cell elev">Elevation</span>
+        <span className="grid-cell relev">Relevance</span>
         <span className="grid-cell diff">Difficulty</span>
         <span className="grid-cell adj">vs Your Pace</span>
       </div>
@@ -90,7 +106,7 @@ export default function MarathonGrid({ projections, onSelect }) {
               <span className="grid-cell dist">{p.distanceKm} km</span>
               <span className="grid-cell time">{p.projectedTime}</span>
               <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
-              <span className="grid-cell elev">{p.elevationGain}m</span>
+              <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>
               <span className="grid-cell diff">
                 <span className={`diff-badge ${p.difficulty >= 1.2 ? 'hard' : p.difficulty >= 1.05 ? 'moderate' : 'easy'}`}>
                   {p.difficulty.toFixed(2)}x
@@ -105,7 +121,8 @@ export default function MarathonGrid({ projections, onSelect }) {
       </div>
 
       <p className="grid-note">
-        Click any row to see detailed comparison. Projections use the Riegel formula adjusted for course elevation and difficulty.
+        Click any row for details. Projections use Riegel formula + elevation/difficulty adjustment + endurance penalty for longer targets.
+        <strong> Relevance </strong> indicates how reliable the projection is based on the distance gap.
       </p>
     </div>
   );
