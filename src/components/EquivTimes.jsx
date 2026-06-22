@@ -19,7 +19,7 @@ function makeFlatCourse(dist) {
 export default function EquivTimes({ activity }) {
   const equivs = standardDistances.map((dist) => {
     const course = makeFlatCourse(dist);
-    const result = projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course);
+    const result = projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course, activity.averageTemp || null);
     return result;
   });
 
