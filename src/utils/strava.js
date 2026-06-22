@@ -69,6 +69,7 @@ export function parseActivityStats(activity) {
     elevationGain: activity.total_elevation_gain || 0,
     startDate: activity.start_date,
     averageSpeed: activity.average_speed,
+    averageTemp: activity.average_temp,
     averageHeartrate: activity.average_heartrate,
     maxHeartrate: activity.max_heartrate,
   };

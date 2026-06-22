@@ -6,6 +6,7 @@ export default function ManualInput({ onRunSubmit }) {
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
   const [elevation, setElevation] = useState('');
+  const [temperature, setTemperature] = useState('');
   const [error, setError] = useState('');
 
   function handleSubmit(e) {
@@ -17,6 +18,7 @@ export default function ManualInput({ onRunSubmit }) {
     const m = parseInt(minutes) || 0;
     const s = parseInt(seconds) || 0;
     const elev = parseFloat(elevation) || 0;
+    const temp = temperature !== '' ? parseFloat(temperature) : null;
 
     if (!d || d <= 0) { setError('Enter a valid distance'); return; }
     if (d > 100) { setError('Max distance is 100 km'); return; }
@@ -33,6 +35,7 @@ export default function ManualInput({ onRunSubmit }) {
       elevationGain: elev,
       startDate: new Date().toISOString(),
       averageSpeed: d / (totalSec / 3600),
+      averageTemp: temp,
       isManual: true,
     };
 
@@ -57,17 +60,27 @@ export default function ManualInput({ onRunSubmit }) {
               onChange={(e) => setDistance(e.target.value)}
             />
           </div>
-          <div className="manual-field">
-            <label>Elevation (m)</label>
-            <input
-              type="number"
-              step="1"
-              min="0"
-              placeholder="e.g. 50"
-              value={elevation}
-              onChange={(e) => setElevation(e.target.value)}
-            />
-          </div>
+        <div className="manual-field">
+          <label>Elevation (m)</label>
+          <input
+            type="number"
+            step="1"
+            min="0"
+            placeholder="e.g. 50"
+            value={elevation}
+            onChange={(e) => setElevation(e.target.value)}
+          />
+        </div>
+        <div className="manual-field">
+          <label>Temperature (°C) — optional</label>
+          <input
+            type="number"
+            step="1"
+            placeholder="e.g. 15"
+            value={temperature}
+            onChange={(e) => setTemperature(e.target.value)}
+          />
+        </div>
         </div>
         <div className="manual-field">
           <label>Time</label>

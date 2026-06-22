@@ -1,3 +1,5 @@
+import { tempAdjustment, getWeather } from './weather';
+
 const RIEGEL_EXPONENT = 1.06;
 
 function riegelProjection(timeSeconds, distanceKm, targetDistanceKm) {
@@ -50,7 +52,7 @@ function formatPace(secondsPerKm) {
   return paceDisplay(secondsPerKm);
 }
 
-function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse) {
+function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCourse, userTempC) {
   const userPace = runDurationSec / runDistanceKm;
   const userElevPerKm = runElevationGain / runDistanceKm;
 
@@ -65,7 +67,12 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
   const endurance = endurancePenalty(runDistanceKm, targetCourse.distanceKm);
   const relevance = getRelevance(runDistanceKm, targetCourse.distanceKm);
 
-  const projectedTime = baseProjectedSec * elevFactor * endurance;
+  const courseWeather = getWeather(targetCourse.id);
+  const weatherFactor = userTempC != null && courseWeather
+    ? tempAdjustment(userTempC, courseWeather.tempC)
+    : 1;
+
+  const projectedTime = baseProjectedSec * elevFactor * endurance * weatherFactor;
   const projectedPace = projectedTime / targetCourse.distanceKm;
 
   return {
@@ -90,6 +97,9 @@ function projectRun(runDistanceKm, runDurationSec, runElevationGain, targetCours
     adjustmentFactor: elevFactor,
     endurancePenalty: endurance,
     relevance,
+    userTemperature: userTempC,
+    weatherFactor,
+    courseWeather,
   };
 }
 

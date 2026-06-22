@@ -100,6 +100,41 @@ export default function MarathonDetail({ projection, onBack }) {
 
           <ElevationChart courseId={p.courseId} distanceKm={p.distanceKm} color={p.color} />
 
+          {p.courseWeather && (
+            <div className="weather-info">
+              <div className="weather-header">
+                <span className="weather-icon">{p.courseWeather.tempC >= 25 ? '☀️' : p.courseWeather.tempC <= 5 ? '🥶' : '🌤️'}</span>
+                <span className="weather-title">Race Day Weather</span>
+              </div>
+              <div className="weather-details">
+                <div className="weather-stat">
+                  <span className="weather-label">Course temp</span>
+                  <span className="weather-value">{p.courseWeather.tempC}°C</span>
+                </div>
+                <div className="weather-stat">
+                  <span className="weather-label">Conditions</span>
+                  <span className="weather-value">{p.courseWeather.condition}</span>
+                </div>
+                <div className="weather-stat">
+                  <span className="weather-label">Race month</span>
+                  <span className="weather-value">{p.courseWeather.month}</span>
+                </div>
+                {p.userTemperature != null && (
+                  <div className="weather-stat">
+                    <span className="weather-label">Your run temp</span>
+                    <span className="weather-value">{p.userTemperature}°C</span>
+                  </div>
+                )}
+              </div>
+              {p.weatherFactor && p.weatherFactor !== 1 && (
+                <div className="weather-note">
+                  Weather adjustment: {p.weatherFactor > 1 ? '+' : ''}{((p.weatherFactor - 1) * 100).toFixed(1)}%
+                  ({p.weatherFactor > 1 ? 'harder' : 'easier'} conditions than your run)
+                </div>
+              )}
+            </div>
+          )}
+
           {p.endurancePenalty > 1 && (
             <div className="endurance-note">
               <strong>Endurance penalty applied:</strong> {((p.endurancePenalty - 1) * 100).toFixed(0)}%

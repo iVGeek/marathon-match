@@ -62,8 +62,9 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const handleSelectActivity = useCallback((activity) => {
     setSelectedActivity(activity);
     setSelectedProjection(null);
+    const userTemp = activity.averageTemp || null;
     const results = allCourses.map((course) =>
-      projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course)
+      projectRun(activity.distanceKm, activity.movingTimeSec, activity.elevationGain, course, userTemp)
     );
     results.sort((a, b) => a.projectedTimeSec - b.projectedTimeSec);
     setProjections(results);
