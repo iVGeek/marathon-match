@@ -1446,7 +1446,7 @@ body {
 
 .pb-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 8px;
   padding: 8px 12px;
   font-size: 11px;
@@ -1459,7 +1459,7 @@ body {
 
 .pb-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 8px;
   padding: 8px 12px;
   font-size: 13px;
@@ -1477,4 +1477,21 @@ body {
 .pb-value {
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
+}
+
+.paceband-dist-select {
+  padding: 6px 8px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.paceband-note {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
 }

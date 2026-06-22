@@ -1,52 +1,65 @@
 import { useState } from 'react';
 import { standardDistances } from '../utils/standardDistances';
-import { paceDisplay, timeDisplay } from '../utils/projections';
+import { paceDisplay, timeDisplay, riegelProjection } from '../utils/projections';
+
+const RIEGEL_EXP = 1.06;
 
 export default function PaceBand() {
-  const [mode, setMode] = useState('time');
-  const [targetTimeSec, setTargetTimeSec] = useState(10800);
-  const [targetPaceSec, setTargetPaceSec] = useState(300);
-
   const [h, setH] = useState('3');
   const [m, setM] = useState('0');
   const [s, setS] = useState('0');
   const [pMin, setPMin] = useState('5');
   const [pSec, setPSec] = useState('0');
+  const [baseDist, setBaseDist] = useState('42.195');
+  const [results, setResults] = useState(null);
+  const [mode, setMode] = useState('marathon');
 
-  function updateFromTime() {
+  const baseDistObj = standardDistances.find(d => d.distanceKm === parseFloat(baseDist)) || standardDistances[0];
+
+  function calcFromMarathon() {
     const hh = parseInt(h) || 0;
     const mm = parseInt(m) || 0;
     const ss = parseInt(s) || 0;
-    const total = hh * 3600 + mm * 60 + ss;
-    if (total > 0) setTargetTimeSec(total);
+    const marathonSec = hh * 3600 + mm * 60 + ss;
+    if (marathonSec <= 0) return;
+    const rows = standardDistances.map(d => {
+      const t = riegelProjection(marathonSec, 42.195, d.distanceKm);
+      return { ...d, timeSec: t, paceSec: d.distanceKm > 0 ? t / d.distanceKm : 0 };
+    });
+    rows.sort((a, b) => a.distanceKm - b.distanceKm);
+    setResults({ baseName: 'Marathon', baseTime: marathonSec, baseDistKm: 42.195, rows });
   }
 
-  function updateFromPace() {
+  function calcFromPace() {
     const min = parseInt(pMin) || 0;
     const sec = parseInt(pSec) || 0;
-    const total = min * 60 + sec;
-    if (total > 0) setTargetPaceSec(total);
+    const paceSec = min * 60 + sec;
+    if (paceSec <= 0) return;
+    const distKm = parseFloat(baseDist) || 42.195;
+    const baseTime = paceSec * distKm;
+    const rows = standardDistances.map(d => {
+      const t = riegelProjection(baseTime, distKm, d.distanceKm);
+      return { ...d, timeSec: t, paceSec: d.distanceKm > 0 ? t / d.distanceKm : 0 };
+    });
+    rows.sort((a, b) => a.distanceKm - b.distanceKm);
+    setResults({ baseName: baseDistObj.name, baseTime, baseDistKm: distKm, paceSec, rows });
   }
-
-  const selectedDistances = mode === 'time'
-    ? standardDistances.filter(d => d.distanceKm >= 21.0975)
-    : standardDistances;
 
   return (
     <div className="section">
       <h2 className="section-title">Pace Band Calculator</h2>
-      <p className="section-subtitle">Set a target finish time or pace and see what you need across all distances.</p>
+      <p className="section-subtitle">Uses Riegel formula (t₂ = t₁ × (d₂/d₁)^1.06) — realistic projections showing pace fade over longer distances.</p>
 
       <div className="paceband-tabs">
-        <button className={`paceband-tab ${mode === 'time' ? 'active' : ''}`} onClick={() => setMode('time')}>
-          Target Finish Time
+        <button className={`paceband-tab ${mode === 'marathon' ? 'active' : ''}`} onClick={() => setMode('marathon')}>
+          Target Marathon Time
         </button>
         <button className={`paceband-tab ${mode === 'pace' ? 'active' : ''}`} onClick={() => setMode('pace')}>
           Target Pace
         </button>
       </div>
 
-      {mode === 'time' ? (
+      {mode === 'marathon' ? (
         <div className="paceband-inputs">
           <div className="paceband-field">
             <label>Target Marathon Time</label>
@@ -57,68 +70,41 @@ export default function PaceBand() {
               <span className="time-sep">:</span>
               <input type="number" min="0" max="59" placeholder="S" value={s} onChange={(e) => setS(e.target.value)} />
             </div>
-            <button className="paceband-btn" onClick={updateFromTime}>Calculate</button>
-          </div>
-
-          <div className="paceband-results">
-            <div className="paceband-result-card highlight">
-              <div className="pr-label">Required Pace</div>
-              <div className="pr-value">{paceDisplay(targetTimeSec / 42.195)}</div>
-            </div>
-            <div className="paceband-result-card">
-              <div className="pr-label">Half Marathon Split</div>
-              <div className="pr-value">{timeDisplay(targetTimeSec / 2)}</div>
-            </div>
-            <div className="paceband-result-card">
-              <div className="pr-label">10K Split</div>
-              <div className="pr-value">{timeDisplay((10 / 42.195) * targetTimeSec)}</div>
-            </div>
-          </div>
-
-          <div className="paceband-table">
-            <div className="pb-header">
-              <span>Distance</span>
-              <span>Finish Time</span>
-              <span>Pace /km</span>
-            </div>
-            {selectedDistances.map(d => {
-              const dTime = (d.distanceKm / 42.195) * targetTimeSec;
-              const dPace = dTime / d.distanceKm;
-              return (
-                <div key={d.id} className="pb-row">
-                  <span className="pb-label">{d.name}</span>
-                  <span className="pb-value">{timeDisplay(dTime)}</span>
-                  <span className="pb-value">{paceDisplay(dPace)}</span>
-                </div>
-              );
-            })}
+            <button className="paceband-btn" onClick={calcFromMarathon}>Calculate</button>
           </div>
         </div>
       ) : (
         <div className="paceband-inputs">
           <div className="paceband-field">
-            <label>Target Pace (/km)</label>
+            <label>Target Pace (/km) for</label>
             <div className="time-inputs">
               <input type="number" min="0" max="59" placeholder="Min" value={pMin} onChange={(e) => setPMin(e.target.value)} />
               <span className="time-sep">:</span>
               <input type="number" min="0" max="59" placeholder="Sec" value={pSec} onChange={(e) => setPSec(e.target.value)} />
+              <select className="paceband-dist-select" value={baseDist} onChange={(e) => setBaseDist(e.target.value)}>
+                {standardDistances.filter(d => d.distanceKm <= 42.195).map(d => (
+                  <option key={d.id} value={d.distanceKm}>{d.name}</option>
+                ))}
+              </select>
             </div>
-            <button className="paceband-btn" onClick={updateFromPace}>Calculate</button>
+            <button className="paceband-btn" onClick={calcFromPace}>Calculate</button>
           </div>
+        </div>
+      )}
 
+      {results && (
+        <>
           <div className="paceband-results">
             <div className="paceband-result-card highlight">
-              <div className="pr-label">Marathon Time</div>
-              <div className="pr-value">{timeDisplay(targetPaceSec * 42.195)}</div>
+              <div className="pr-label">{results.baseName} Pace</div>
+              <div className="pr-value">{paceDisplay(results.baseTime / results.baseDistKm)}</div>
             </div>
-            <div className="paceband-result-card">
-              <div className="pr-label">Half Marathon</div>
-              <div className="pr-value">{timeDisplay(targetPaceSec * 21.0975)}</div>
-            </div>
-            <div className="paceband-result-card">
-              <div className="pr-label">10K</div>
-              <div className="pr-value">{timeDisplay(targetPaceSec * 10)}</div>
-            </div>
+            {results.rows.filter(d => d.distanceKm < 42.195).slice(-2).map(d => (
+              <div key={d.id} className="paceband-result-card">
+                <div className="pr-label">{d.name} Split</div>
+                <div className="pr-value">{timeDisplay(d.timeSec)}</div>
+              </div>
+            ))}
           </div>
 
           <div className="paceband-table">
@@ -126,19 +112,30 @@ export default function PaceBand() {
               <span>Distance</span>
               <span>Finish Time</span>
               <span>Pace /km</span>
+              <span>vs Base Pace</span>
             </div>
-            {selectedDistances.map(d => {
-              const dTime = targetPaceSec * d.distanceKm;
+            {results.rows.map(d => {
+              const basePace = results.baseTime / results.baseDistKm;
+              const diff = ((d.paceSec / basePace) - 1) * 100;
+              const isBase = Math.abs(d.distanceKm - results.baseDistKm) < 0.01;
               return (
                 <div key={d.id} className="pb-row">
                   <span className="pb-label">{d.name}</span>
-                  <span className="pb-value">{timeDisplay(dTime)}</span>
-                  <span className="pb-value">{paceDisplay(targetPaceSec)}</span>
+                  <span className="pb-value">{timeDisplay(d.timeSec)}</span>
+                  <span className="pb-value">{paceDisplay(d.paceSec)}</span>
+                  <span className="pb-value" style={{ color: diff > 3 ? 'var(--negative)' : diff < -1 ? 'var(--positive)' : 'var(--text-muted)', fontSize: 12 }}>
+                    {isBase ? '—' : `${diff > 0 ? '+' : ''}${diff.toFixed(1)}%`}
+                  </span>
                 </div>
               );
             })}
           </div>
-        </div>
+
+          <p className="paceband-note">
+            Based on Riegel formula with exponent {RIEGEL_EXP}. Longer distances show pace fade automatically.
+            A {results.baseName} time of {timeDisplay(results.baseTime)} at {paceDisplay(results.baseTime / 42.195)} gives a ~{paceDisplay(results.rows.find(d => d.distanceKm >= 100)?.paceSec || 0)} pace at 100K.
+          </p>
+        </>
       )}
     </div>
   );
