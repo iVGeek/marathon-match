@@ -26,7 +26,7 @@ export default function ActivitySelector({ activities, loading, selectedId, onSe
 
   return (
     <div className="section">
-      <h2 className="section-title">Select a Run</h2>
+      <h2 className="section-title">Your Recent Runs</h2>
       <p className="section-subtitle">
         Choose a recent activity to project against marathon courses.
       </p>

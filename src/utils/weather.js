@@ -48,7 +48,7 @@ function tempAdjustment(userTempC, courseTempC) {
   const uDiff = Math.abs(userTempC - optimal);
   const cDiff = Math.abs(courseTempC - optimal);
   const diff = cDiff - uDiff;
-  return 1 + diff * 0.003;
+  return Math.max(0.5, Math.min(1.5, 1 + diff * 0.003));
 }
 
 export { weatherData, getWeather, tempAdjustment };

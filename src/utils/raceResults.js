@@ -204,7 +204,7 @@ const courses = {
     'western-states': {
       year: 2025, mu: 11.15, sigma: 0.30, finishers: 386,
       winnerMen: { name: 'Chris Kelly', country: 'USA', timeSec: timeToSec(14,28,21) },
-      winnerWomen: { name: 'Hayden Hawks', country: 'USA', timeSec: timeToSec(17,10,8) },
+      winnerWomen: { name: 'Abby Hall', country: 'USA', timeSec: timeToSec(16,37,16) },
     },
     leadville: {
       year: 2025, mu: 11.22, sigma: 0.30, finishers: 624,
@@ -239,17 +239,16 @@ export function estimateRank(projectedTimeSec, courseId) {
   const c = byId[courseId];
   if (!c || !projectedTimeSec) return null;
 
-  const percentile = Math.min(0.999, logNormalCDF(projectedTimeSec, c.mu, c.sigma));
+  const raw = logNormalCDF(projectedTimeSec, c.mu, c.sigma);
+  const percentile = Math.min(0.99999, raw);
   const position = Math.max(1, Math.round(percentile * c.finishers));
-
-  const total = c.finishers;
-  const pct = ((position / total) * 100).toFixed(1);
+  const outOf = c.finishers;
 
   return {
     position,
-    totalFinishers: total,
-    topPct: pct,
-    percentile: (percentile * 100).toFixed(1),
+    totalFinishers: outOf,
+    topPct: (position / outOf) * 100,
+    percentile: percentile * 100,
     winnerName: c.winnerMen.name,
     winnerTimeSec: c.winnerMen.timeSec,
     winnerWomenName: c.winnerWomen.name,

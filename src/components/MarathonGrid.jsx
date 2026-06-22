@@ -101,6 +101,7 @@ export default function MarathonGrid({ projections, onSelect }) {
               const paceRatio = p.projectedPaceSec / p.userPaceSec;
               const isFaster = paceRatio < 1;
               const pctDiff = Math.abs((paceRatio - 1) * 100);
+              const rank = estimateRank(p.projectedTimeSec, p.courseId);
 
               return (
                 <button
@@ -120,13 +121,11 @@ export default function MarathonGrid({ projections, onSelect }) {
                   <span className="grid-cell time">{p.projectedTime}</span>
                   <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
                   <span className="grid-cell rank">
-                    {(() => {
-                      const r = estimateRank(p.projectedTimeSec, p.courseId);
-                      if (!r) return null;
-                      const rankColor = r.topPct <= 5 ? '#27ae60' : r.topPct <= 10 ? '#2ecc71' : r.topPct <= 25 ? 'var(--accent)' : '#888';
-                      const rankLabel = r.topPct <= 1 ? 'ELITE' : r.topPct <= 5 ? `Top ${r.topPct}%` : `#${r.position.toLocaleString()}`;
+                    {rank ? (() => {
+                      const rankColor = rank.topPct <= 5 ? '#27ae60' : rank.topPct <= 10 ? '#2ecc71' : rank.topPct <= 25 ? 'var(--accent)' : '#888';
+                      const rankLabel = rank.topPct <= 1 ? 'ELITE' : rank.topPct <= 5 ? `Top ${rank.topPct.toFixed(1)}%` : `#${rank.position.toLocaleString()}`;
                       return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankLabel}</span>;
-                    })()}
+                    })() : null}
                   </span>
                   <span className="grid-cell relev">{relevanceBadge(p.relevance)}</span>
                   <span className="grid-cell diff">
@@ -138,11 +137,7 @@ export default function MarathonGrid({ projections, onSelect }) {
                     {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
                   </span>
                   <span className="grid-cell winner">
-                    {(() => {
-                      const r = estimateRank(p.projectedTimeSec, p.courseId);
-                      if (!r) return null;
-                      return <span className="winner-pace">M {paceDisplay(r.winnerTimeSec / p.distanceKm)} F {paceDisplay(r.winnerWomenTimeSec / p.distanceKm)}</span>;
-                    })()}
+                    {rank ? <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm)} F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm)}</span> : null}
                   </span>
                 </button>
               );

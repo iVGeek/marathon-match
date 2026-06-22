@@ -27,7 +27,7 @@ export default function ManualInput({ onRunSubmit }) {
     if (totalSec > 86400) { setError('Time must be under 24 hours'); return; }
 
     const activity = {
-      id: 'manual-' + Date.now(),
+      id: 'manual-' + crypto.randomUUID(),
       name: `${d.toFixed(1)} km Run`,
       distanceKm: d,
       movingTimeSec: totalSec,

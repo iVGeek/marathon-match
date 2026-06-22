@@ -133,7 +133,7 @@ export default function PaceBand() {
 
           <p className="paceband-note">
             Based on Riegel formula with exponent {RIEGEL_EXP}. Longer distances show pace fade automatically.
-            A {results.baseName} time of {timeDisplay(results.baseTime)} at {paceDisplay(results.baseTime / 42.195)} gives a ~{paceDisplay(results.rows.find(d => d.distanceKm >= 100)?.paceSec || 0)} pace at 100K.
+            A {results.baseName} time of {timeDisplay(results.baseTime)} at {paceDisplay(results.baseTime / results.baseDistKm)} gives a ~{paceDisplay(results.rows.find(d => d.distanceKm >= 100)?.paceSec || 0)} pace at 100K.
           </p>
         </>
       )}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getStoredToken, storeToken, clearToken, isTokenExpired, getAuthUrl } from './utils/strava';
-import { fetchConfig, getCachedConfig } from './config';
+import { fetchConfig } from './config';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import './App.css';

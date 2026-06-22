@@ -185,7 +185,7 @@ export default function MarathonDetail({ projection, onBack, athlete, userAge })
                 </div>
                 <div className="ranking-stat">
                   <span className="ranking-label">Faster Than</span>
-                  <span className="ranking-value">{Math.max(0, 100 - parseFloat(rank.topPct)).toFixed(0)}% of finishers</span>
+                  <span className="ranking-value">{Math.max(0, 100 - rank.topPct).toFixed(0)}% of finishers</span>
                 </div>
                 <div className="ranking-stat">
                   <span className="ranking-label">Men's Winner ({rankYear || '2025'})</span>
