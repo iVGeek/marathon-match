@@ -39,8 +39,10 @@ const GridRow = memo(function GridRow({ p, isHovered, onHover, onLeave, onSelect
       <span className="grid-cell rank">
         {rank ? (() => {
           const rankColor = rank.topPct <= 5 ? '#27ae60' : rank.topPct <= 10 ? '#2ecc71' : rank.topPct <= 25 ? 'var(--accent)' : '#888';
-          const rankLabel = rank.topPct <= 1 ? 'ELITE' : rank.topPct <= 5 ? `Top ${rank.topPct.toFixed(1)}%` : `#${rank.position.toLocaleString()}`;
-          return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankLabel}</span>;
+          const rankText = rank.topPct <= 1 ? `You'd rank #${rank.position} — ELITE!`
+            : rank.topPct <= 5 ? `You'd be Top ${rank.topPct.toFixed(1)}%`
+            : `You'd rank #${rank.position.toLocaleString()} of ${rank.totalFinishers.toLocaleString()}`;
+          return <span className="rank-badge" style={{ color: rankColor, borderColor: rankColor }}>{rankText}</span>;
         })() : null}
       </span>
       <span className="grid-cell relev"><relevanceBadge relevance={p.relevance} /></span>

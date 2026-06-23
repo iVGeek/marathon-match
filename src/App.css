@@ -274,8 +274,7 @@ body {
 }
 
 .grid-cell.rank {
-  width: 70px;
-  min-width: 70px;
+  min-width: 0;
 }
 
 .rank-badge {
@@ -286,6 +285,8 @@ body {
   border-radius: 4px;
   white-space: nowrap;
   border: 1px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ranking-info {
@@ -567,7 +568,7 @@ body {
 
 .grid-header {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 0.8fr 1.4fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 1.1fr 0.9fr 0.7fr 0.8fr 1.4fr;
   gap: 6px;
   padding: 8px 12px;
   font-size: 11px;
@@ -585,7 +586,7 @@ body {
 
 .grid-row {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 0.8fr 1.4fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 1.1fr 0.9fr 0.7fr 0.8fr 1.4fr;
   gap: 6px;
   padding: 10px 12px;
   font-size: 13px;
@@ -1732,7 +1733,7 @@ body {
   }
   .grid-header,
   .grid-row {
-    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 0.6fr 0.9fr 0.7fr 0.7fr 1.2fr;
+    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 1fr 0.8fr 0.6fr 0.7fr 1.2fr;
     font-size: 12px;
     gap: 4px;
   }
@@ -1765,7 +1766,7 @@ body {
   }
   .grid-header,
   .grid-row {
-    grid-template-columns: 1.8fr 0.4fr 0.7fr 0.6fr 0.4fr 0.7fr 0.5fr 0.6fr 1fr;
+    grid-template-columns: 1.8fr 0.4fr 0.7fr 0.6fr 0.8fr 0.6fr 0.4fr 0.6fr 1fr;
     font-size: 10px;
     gap: 2px;
     padding: 8px 4px;
