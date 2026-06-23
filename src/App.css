@@ -1785,49 +1785,154 @@ body {
 /* Responsive: mobile */
 @media (max-width: 640px) {
   .dashboard {
-    padding: 12px;
+    padding: 10px;
   }
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
   }
   .header-left {
     flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+  }
+  .header-title {
+    font-size: 20px;
   }
   .header-athlete {
+    font-size: 11px;
+    width: 100%;
+  }
+  .athlete-name {
+    width: 100%;
+  }
+  .athlete-stats {
+    flex-wrap: wrap;
+  }
+  .logout-btn {
+    padding: 6px 14px;
     font-size: 12px;
   }
-  .dashboard { padding: 12px 10px; }
-  .section { padding: 14px; }
-  .grid-hd, .grid-row {
-    grid-template-columns: 1.6fr 0.4fr 0.6fr 0.55fr 0.7fr 0.5fr 0.5fr 1.2fr;
-    gap: 3px;
-    padding: 7px 6px;
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Sections - more padding, less margin */
+  .section {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+  }
+  .section-header {
+    gap: 8px;
+  }
+  .section-title {
+    font-size: 16px;
+  }
+  .section-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Segment tabs - scrollable */
+  .segment-tabs {
+    overflow-x: auto;
+    padding-bottom: 4px;
+    gap: 4px;
+  }
+  .segment-tab {
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Grid - stacked card layout */
+  .grid-hd { display: none; }
+
+  .grid-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    padding: 12px 10px;
+    border-left-width: 3px;
+    min-height: 64px;
+    animation: none;
+  }
+
+  .grid-row .gc {
+    overflow: visible;
+    white-space: nowrap;
+    text-overflow: clip;
+    flex: initial;
+  }
+
+  .grid-row .gc.course {
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+  .grid-row .gc.course .course-meta { display: none; }
+  .grid-row .gc .course-dot { display: none; }
+  .grid-row .gc .course-flag { display: none; }
+  .course-name { font-size: 14px; }
+
+  .grid-row .gc.rank { margin-left: auto; }
+  .rank-badge { font-size: 10px; padding: 2px 8px; }
+
+  .grid-row .gc.dist { display: none; }
+
+  .grid-row .gc.time { font-size: 12px; font-weight: 600; }
+  .grid-row .gc.pace { font-size: 12px; font-weight: 500; }
+
+  .grid-row .gc.diff { margin-left: auto; }
+  .diff-badge { font-size: 10px; padding: 1px 6px; }
+  .diff-lbl { display: none; }
+  .diff-val { font-weight: 700; }
+
+  .grid-row .gc.adj { font-size: 11px; }
+
+  .grid-row .gc.winner {
+    width: 100%;
+    justify-content: flex-start;
+    font-size: 10px;
+    margin-top: 2px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+  }
+  .grid-row .gc.winner .winner-pace { font-size: 10px; gap: 4px; }
+  .winner-vr { opacity: 0.3; }
+
+  /* Activity selector */
+  .activity-list {
+    max-height: 260px;
+    gap: 6px;
+  }
+  .activity-card {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 10px 12px;
+  }
+  .activity-name {
+    font-size: 13px;
+    width: 100%;
+  }
+  .activity-stats {
     font-size: 11px;
   }
-  .gc.course .course-meta { display: none; }
-  .gc .course-dot { display: none; }
-  .gc .course-flag { display: none; }
-  .gc.winner .winner-pace { font-size: 8px; gap: 2px; }
-  .winner-vr { display: none; }
-  .gc.time { font-size: 10px; }
-  .gc.pace { font-size: 10px; }
-  .gc.dist { font-size: 10px; }
-  .course-name { font-size: 11px; }
-  .rank-badge { font-size: 9px; padding: 1px 6px; }
-  .diff-badge { font-size: 9px; padding: 1px 5px; }
-  .diff-lbl { display: none; }
-  .rel-badge { font-size: 8px; padding: 1px 4px; }
-  .detail-body {
-    grid-template-columns: 1fr;
+  .activity-date {
+    font-size: 10px;
+    margin-left: 8px;
   }
-  .manual-row {
-    flex-direction: column;
-  }
-  .equiv-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
+
+  /* Input tabs */
   .input-tabs {
     width: 100%;
   }
@@ -1837,36 +1942,153 @@ body {
     font-size: 12px;
     padding: 8px 12px;
   }
-  .section {
+
+  /* Manual input */
+  .manual-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .manual-input-card {
     padding: 16px;
   }
+  .manual-submit {
+    width: 100%;
+    justify-content: center;
+  }
+  .time-inputs input {
+    width: 60px;
+  }
+
+  /* Detail view */
+  .detail-header {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  .detail-title-row {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
   .detail-title {
-    font-size: 20px;
+    font-size: 18px;
   }
+  .detail-location {
+    font-size: 12px;
+  }
+  .detail-summary {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .summary-card {
+    padding: 12px;
+  }
+  .summary-value {
+    font-size: 18px;
+  }
+  .detail-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .detail-section-title {
+    font-size: 16px;
+  }
+
+  /* Comparison bars */
   .comparison-row {
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 50px 1fr;
+    gap: 10px;
   }
-  .activity-card {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .activity-stats {
+  .comparison-label {
     font-size: 11px;
   }
+  .bar-label {
+    font-size: 10px;
+    width: 44px;
+  }
+  .bar-value {
+    font-size: 11px;
+    width: 64px;
+  }
+
+  /* Equivalent times */
+  .equiv-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .equiv-card {
+    padding: 12px;
+  }
+  .equiv-time {
+    font-size: 16px;
+  }
+
+  /* Weather */
   .weather-details {
     grid-template-columns: 1fr;
   }
-  .segment-tabs {
-    overflow-x: auto;
-    padding-bottom: 4px;
+
+  /* Pace analysis */
+  .pa-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
-  .segment-tab {
-    white-space: nowrap;
-    padding: 6px 12px;
-    font-size: 12px;
+  .pa-card {
+    padding: 10px;
   }
+  .pa-value {
+    font-size: 16px;
+  }
+
+  /* BQ checker */
   .bq-inputs {
     flex-direction: column;
+    gap: 8px;
+  }
+  .bq-field input,
+  .bq-field select {
+    width: 100%;
+  }
+
+  /* Pace band */
+  .paceband-tabs {
+    width: 100%;
+  }
+  .paceband-tab {
+    flex: 1;
+    justify-content: center;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  .paceband-results {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .paceband-result-card {
+    padding: 12px;
+  }
+
+  /* Training paces */
+  .pr-value {
+    font-size: 16px;
+  }
+
+  /* Ranking info */
+  .ranking-details {
+    gap: 10px;
+  }
+  .ranking-stat {
+    min-width: 80px;
+  }
+
+  /* Splits */
+  .splits-header,
+  .split-row {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    font-size: 11px;
+    gap: 4px;
+    padding: 6px 8px;
+  }
+  .split-label {
+    font-size: 11px;
   }
 }
 
