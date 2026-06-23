@@ -33,14 +33,18 @@ const ActivityCard = memo(function ActivityCard({ act, selectedId, onSelect }) {
   );
 });
 
-export default function ActivitySelector({ activities, loading, selectedId, onSelect }) {
+export default function ActivitySelector({ activities, loading, loadProgress, selectedId, onSelect }) {
   if (loading) {
     return (
       <div className="section">
         <h2 className="section-title">Your Recent Runs</h2>
         <div className="loading-activities">
           <div className="spinner" />
-          <span>Loading your activities...</span>
+          <span>
+            {loadProgress
+              ? `Loading activities... (${loadProgress.total} found)`
+              : 'Loading your activities...'}
+          </span>
         </div>
       </div>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { fetchActivities, fetchActivityDetail, isRunningActivity, parseActivityStats, parseActivityDetail, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
+import { fetchAllActivities, fetchActivityDetail, isRunningActivity, parseActivityStats, parseActivityDetail, isTokenExpired, refreshAccessToken, storeToken } from '../utils/strava';
 import { analyzeSplits } from '../utils/paceAnalysis';
 import ActivitySelector from './ActivitySelector';
 import ManualInput from './ManualInput';
@@ -21,11 +21,13 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   const [paceAnalysis, setPaceAnalysis] = useState(null);
   const [selectedProjection, setSelectedProjection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(null);
   const [userAge, setUserAge] = useState(() => {
     const saved = localStorage.getItem('marathon_match_age');
     return saved ? parseInt(saved, 10) : null;
   });
   const [detailLoading, setDetailLoading] = useState(false);
+  const [detailFetchFailed, setDetailFetchFailed] = useState(false);
   const [error, setError] = useState(null);
   const normalizeToken = (t) => {
     if (!t) return null;
@@ -84,16 +86,21 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setLoadProgress(null);
       try {
         const accessToken = await ensureValidToken(currentToken);
         if (!accessToken) return;
-        const data = await fetchActivities(accessToken);
+        const data = await fetchAllActivities(accessToken, (total, batchSize) => {
+          setLoadProgress({ total, lastBatch: batchSize });
+        });
         const runs = data.filter(isRunningActivity).map(parseActivityStats);
         setActivities(runs);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
+        setLoadProgress(null);
       }
     })();
   }, [currentToken, ensureValidToken]);
@@ -102,21 +109,20 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
     setSelectedActivity(activity);
     setSelectedProjection(null);
     setPaceAnalysis(null);
-    setProjections([]);
+    setDetailFetchFailed(false);
 
     let effectiveActivity = activity;
     let analysis = null;
+    let fetchFailed = false;
 
     if (!activity.isManual) {
       setDetailLoading(true);
       try {
         const accessToken = await ensureValidToken(currentToken);
         if (!accessToken) {
-          console.warn('No valid access token for detail fetch');
+          fetchFailed = true;
         } else {
-          console.log('Fetching detail for activity', activity.id);
           const detail = await fetchActivityDetail(accessToken, activity.id);
-          console.log('Detail response has splits_metric?', !!detail?.splits_metric, 'count:', detail?.splits_metric?.length);
           const parsed = parseActivityDetail(detail);
           effectiveActivity = parsed;
 
@@ -125,14 +131,14 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
             if (analysis && parsed.splits) {
               analysis._rawSplits = parsed.splits;
             }
-          } else if (parsed.splits) {
-            console.warn('Activity has splits array but it is empty:', activity.id);
           }
         }
       } catch (err) {
         console.error('Activity detail fetch failed:', err?.message || err);
+        fetchFailed = true;
       } finally {
         setDetailLoading(false);
+        if (fetchFailed) setDetailFetchFailed(true);
       }
     }
 
@@ -230,6 +236,7 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
             <ActivitySelector
               activities={activities}
               loading={loading}
+              loadProgress={loadProgress}
               selectedId={selectedActivity?.id}
               onSelect={handleSelectActivity}
             />
@@ -249,8 +256,8 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
               )}
 
               {paceAnalysis && <PaceAnalysis analysis={paceAnalysis} />}
-              {!detailLoading && selectedActivity && !selectedActivity.isManual && !paceAnalysis && (
-                <div className="section"><p className="text-muted">No per-km split data from Strava for this activity. Check browser console (F12) — if you see <code>splits_metric</code> count: 0, the activity may lack GPS data or be too short. Projections use average pace.</p></div>
+              {!detailLoading && !detailFetchFailed && !paceAnalysis && (
+                <div className="section"><p className="text-muted">No per-km split data from Strava for this activity. Projections will use average pace.</p></div>
               )}
 
               <TrainingPaces activity={selectedActivity} />
