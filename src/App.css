@@ -273,22 +273,6 @@ body {
   display: inline-block;
 }
 
-.grid-cell.rank {
-  min-width: 0;
-}
-
-.rank-badge {
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(252, 76, 2, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  white-space: nowrap;
-  border: 1px solid transparent;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .ranking-info {
   margin-top: 16px;
   padding: 14px;
@@ -566,221 +550,168 @@ body {
   background: rgba(252, 76, 2, 0.15);
 }
 
-.grid-header {
-  display: grid;
-  grid-template-columns: 1.2fr 2fr 1fr 1fr 1fr;
-  gap: 6px;
-  padding: 8px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border);
-}
-
-.grid-body {
+.course-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.grid-row {
-  display: grid;
-  grid-template-columns: 1.2fr 2fr 1fr 1fr 1fr;
-  gap: 6px;
-  padding: 10px 12px;
-  font-size: 13px;
-  align-items: center;
-  background: transparent;
-  border: none;
-  border-left: 3px solid transparent;
-  border-bottom: 1px solid var(--border);
+.course-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0;
   color: var(--text);
   font-family: inherit;
-  cursor: pointer;
+  font-size: inherit;
   text-align: left;
-  transition: background 0.1s;
-}
-
-.grid-row:last-child {
-  border-bottom: none;
-}
-
-.grid-row.hovered {
-  background: var(--bg-elevated);
-}
-
-.grid-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
+  cursor: pointer;
   overflow: hidden;
-  text-overflow: ellipsis;
+  transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
 }
 
-.grid-cell.rank,
-.grid-cell.time,
-.grid-cell.diff,
-.grid-cell.winner {
-  font-variant-numeric: tabular-nums;
+.course-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
 }
 
-.grid-cell.rank {
-  justify-content: center;
+.course-card:active {
+  transform: scale(0.995);
 }
 
-.rank-badge {
+.cc-rank {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid;
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.rank-value {
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.rank-sub {
-  font-size: 9px;
-  font-weight: 500;
-  opacity: 0.6;
-  line-height: 1.1;
-}
-
-.course-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  justify-content: center;
+  gap: 2px;
+  min-width: 80px;
+  padding: 12px 8px;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
   flex-shrink: 0;
 }
 
-.course-info {
+.cc-rank-val {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+}
+
+.cc-rank-sub {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.55;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.cc-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
+  padding: 12px 16px;
   min-width: 0;
 }
 
-.course-name {
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1.2;
-}
-
-.course-meta {
+.cc-name-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.course-flag {
-  width: 16px;
-  height: 12px;
+.cc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-color, var(--accent));
+  flex-shrink: 0;
+}
+
+.cc-name {
+  font-weight: 650;
+  font-size: 15px;
+  line-height: 1.2;
+  margin-right: auto;
+}
+
+.cc-flag {
+  width: 18px;
+  height: 13px;
   border-radius: 2px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
-.time-value {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.2;
+.cc-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.time-pace {
-  font-size: 11px;
-  opacity: 0.6;
-  line-height: 1.1;
-}
-
-.grid-cell.time {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-}
-
-.grid-cell.diff {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-}
-
-.diff-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.diff-badge.easy {
-  background: rgba(34, 197, 94, 0.12);
-  color: var(--positive);
-}
-
-.diff-badge.hard {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-}
-
-.diff-badge.moderate {
-  background: rgba(252, 76, 2, 0.1);
-  color: var(--accent);
-}
-
-.adj-label {
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1.1;
-}
-
-.adj-label.faster {
-  color: var(--positive);
-}
-
-.adj-label.slower {
-  color: #ef4444;
-}
-
-.grid-cell.winner {
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-}
-
-.winner-pace {
+.cc-stat {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 500;
-  text-align: right;
+  min-width: 0;
 }
 
-.winner-row {
+.cc-stat-val {
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 
-.course-dot.large {
-  width: 14px;
-  height: 14px;
+.cc-stat-lbl {
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.45;
+  line-height: 1.1;
 }
 
-.diff-badge.moderate {
-  background: rgba(251, 191, 36, 0.12);
-  color: #fbbf24;
+.cc-easy {
+  color: var(--positive);
 }
 
-.diff-badge.hard {
-  background: rgba(239, 68, 68, 0.12);
-  color: var(--negative);
+.cc-hard {
+  color: #ef4444;
+}
+
+.cc-winners .cc-stat-val {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.cc-winners .cc-stat-lbl {
+  font-size: 9px;
+}
+
+.cc-no-data {
+  opacity: 0.3;
+}
+
+.cc-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  opacity: 0.25;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.course-card:hover .cc-arrow {
+  opacity: 0.6;
 }
 
 /* Relevance Badges */
@@ -852,14 +783,6 @@ body {
   font-size: 13px;
   color: #fbbf24;
   line-height: 1.5;
-}
-
-.grid-cell.adj.faster {
-  color: var(--positive);
-}
-
-.grid-cell.adj.slower {
-  color: var(--negative);
 }
 
 .grid-note {
@@ -1839,20 +1762,28 @@ body {
   .detail-summary {
     grid-template-columns: 1fr;
   }
-  .grid-header,
-  .grid-row {
-    grid-template-columns: 1.2fr 1.8fr 1fr 1fr 1fr;
-    font-size: 12px;
-    gap: 4px;
+  .cc-rank {
+    min-width: 64px;
+    padding: 10px 6px;
   }
-  .grid-cell.winner .winner-pace {
-    font-size: 10px;
+  .cc-rank-val {
+    font-size: 13px;
   }
-  .rank-value {
-    font-size: 12px;
-  }
-  .rank-sub {
+  .cc-rank-sub {
     font-size: 8px;
+  }
+  .cc-main {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .cc-name {
+    font-size: 13px;
+  }
+  .cc-stats {
+    gap: 12px;
+  }
+  .cc-stat-val {
+    font-size: 12px;
   }
   .athlete-stats {
     flex-wrap: wrap;
@@ -1875,21 +1806,60 @@ body {
   .header-athlete {
     font-size: 12px;
   }
-  .grid-header,
-  .grid-row {
-    grid-template-columns: 1fr 1.5fr 0.9fr 0.9fr 0.9fr;
+  .course-card {
+    flex-direction: column;
+    border-radius: 8px;
+  }
+  .cc-rank {
+    flex-direction: row;
+    min-width: 0;
+    width: 100%;
+    padding: 8px 12px;
+    gap: 6px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    justify-content: flex-start;
+  }
+  .cc-rank-val {
+    font-size: 14px;
+  }
+  .cc-rank-sub {
     font-size: 10px;
-    gap: 2px;
-    padding: 8px 4px;
+    opacity: 0.45;
   }
-  .grid-cell .course-dot {
+  .cc-main {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .cc-name-row {
+    gap: 6px;
+  }
+  .cc-dot {
+    width: 8px;
+    height: 8px;
+  }
+  .cc-name {
+    font-size: 14px;
+  }
+  .cc-flag {
+    width: 16px;
+    height: 11px;
+  }
+  .cc-stats {
+    gap: 10px;
+  }
+  .cc-stat-val {
+    font-size: 12px;
+  }
+  .cc-stat-lbl {
+    font-size: 8px;
+  }
+  .cc-arrow {
     display: none;
   }
-  .grid-cell .course-flag {
-    display: none;
-  }
-  .grid-cell.winner .winner-pace {
+  .rel-badge {
     font-size: 9px;
+    padding: 1px 5px;
   }
   .detail-body {
     grid-template-columns: 1fr;
