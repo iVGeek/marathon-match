@@ -567,7 +567,7 @@ body {
 
 .grid-header {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr 0.9fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 0.8fr 1.4fr;
   gap: 6px;
   padding: 8px 12px;
   font-size: 11px;
@@ -585,7 +585,7 @@ body {
 
 .grid-row {
   display: grid;
-  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 1fr 0.9fr;
+  grid-template-columns: 2.5fr 0.7fr 1.1fr 0.9fr 0.7fr 1.1fr 0.8fr 0.8fr 1.4fr;
   gap: 6px;
   padding: 10px 12px;
   font-size: 13px;
@@ -1732,11 +1732,14 @@ body {
   }
   .grid-header,
   .grid-row {
-    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 0.6fr 0.9fr 0.7fr 0.8fr 0.8fr;
+    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 0.6fr 0.9fr 0.7fr 0.7fr 1.2fr;
     font-size: 12px;
     gap: 4px;
   }
   .grid-cell.winner .winner-pace {
+    font-size: 10px;
+  }
+  .grid-cell.adj .diff-badge {
     font-size: 10px;
   }
   .athlete-stats {
@@ -1762,17 +1765,19 @@ body {
   }
   .grid-header,
   .grid-row {
-    grid-template-columns: 2fr 0.5fr 0.8fr 0.7fr 0.5fr 0.8fr 0.6fr 0.7fr 0.7fr;
-    font-size: 11px;
+    grid-template-columns: 1.8fr 0.4fr 0.7fr 0.6fr 0.4fr 0.7fr 0.5fr 0.6fr 1fr;
+    font-size: 10px;
     gap: 2px;
-    padding: 8px 6px;
-    overflow-x: auto;
+    padding: 8px 4px;
   }
   .grid-cell .course-dot {
     display: none;
   }
   .grid-cell .course-flag {
     display: none;
+  }
+  .grid-cell.winner .winner-pace {
+    font-size: 9px;
   }
   .detail-body {
     grid-template-columns: 1fr;

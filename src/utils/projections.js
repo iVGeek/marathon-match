@@ -47,11 +47,11 @@ function getRelevance(userDistanceKm, targetDistanceKm) {
   return { level: 'estimate', label: 'Rough estimate', score: 0 };
 }
 
-function paceDisplay(secondsPerKm) {
-  if (secondsPerKm == null || !isFinite(secondsPerKm)) return '--:-- /km';
+function paceDisplay(secondsPerKm, compact) {
+  if (secondsPerKm == null || !isFinite(secondsPerKm)) return '--:--';
   const min = Math.floor(secondsPerKm / 60);
   const sec = Math.round(secondsPerKm % 60);
-  return `${min}:${sec.toString().padStart(2, '0')} /km`;
+  return `${min}:${sec.toString().padStart(2, '0')}${compact ? '' : ' /km'}`;
 }
 
 function timeDisplay(totalSeconds) {

@@ -53,7 +53,7 @@ const GridRow = memo(function GridRow({ p, isHovered, onHover, onLeave, onSelect
         {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
       </span>
       <span className="grid-cell winner">
-        {rank ? <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm)} F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm)}</span> : null}
+        {rank ? <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm, true)} · F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm, true)}/km</span> : null}
       </span>
     </button>
   );
