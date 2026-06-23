@@ -11,65 +11,56 @@ const RelBadge = memo(function RelBadge({ relevance }) {
     estimate: ['rel-estimate', 'Rough estimate'],
   };
   const [cls, label] = map[relevance.level] || map.estimate;
-  return <span className={`mp-rel ${cls}`}>{label}</span>;
+  return <span className={`rel-badge ${cls}`}>{label}</span>;
 });
 
 function formatRank(rank) {
   if (!rank) return null;
-  if (rank.topPct <= 1) return { value: `#${rank.position}`, sub: 'ELITE' };
-  if (rank.topPct <= 5) return { value: `Top ${rank.topPct.toFixed(1)}%`, sub: '' };
-  return { value: `#${rank.position.toLocaleString()}`, sub: `/${rank.totalFinishers.toLocaleString()}` };
+  if (rank.topPct <= 1) return `#${rank.position} — ELITE!`;
+  if (rank.topPct <= 5) return `Top ${rank.topPct.toFixed(1)}%`;
+  return `#${rank.position.toLocaleString()} of ${rank.totalFinishers.toLocaleString()}`;
 }
 
-function rankTier(rank) {
-  if (!rank) return 'none';
-  if (rank.topPct <= 1) return 'elite';
-  if (rank.topPct <= 5) return 'great';
-  if (rank.topPct <= 15) return 'good';
-  if (rank.topPct <= 30) return 'solid';
-  return 'none';
+function rankColor(rank) {
+  if (!rank) return '#888';
+  if (rank.topPct <= 5) return '#27ae60';
+  if (rank.topPct <= 10) return '#2ecc71';
+  if (rank.topPct <= 25) return 'var(--accent)';
+  return '#888';
 }
 
-const CourseCard = memo(function CourseCard({ p, onSelect }) {
-  const rank = useMemo(() => estimateRank(p.projectedTimeSec, p.courseId), [p.projectedTimeSec, p.courseId]);
-  const r = formatRank(rank);
-  const tier = rankTier(rank);
+const GridRow = memo(function GridRow({ p, onSelect }) {
   const paceRatio = p.projectedPaceSec / p.userPaceSec;
-  const faster = paceRatio < 1;
-  const pct = Math.abs((paceRatio - 1) * 100);
-  const diffLabel = p.diffVsRun === 'Less' ? `${p.diffVsRunPct.toFixed(0)}% easier`
-    : p.diffVsRun === 'More' ? `${p.diffVsRunPct.toFixed(0)}% harder` : 'Similar difficulty';
-  const diffCls = p.diffVsRun === 'More' ? 'hard' : p.diffVsRun === 'Less' ? 'easy' : '';
+  const isFaster = paceRatio < 1;
+  const pctDiff = Math.abs((paceRatio - 1) * 100);
+  const rank = useMemo(() => estimateRank(p.projectedTimeSec, p.courseId), [p.projectedTimeSec, p.courseId]);
+  const rc = rankColor(rank);
 
   return (
-    <button className={`mp-card ${tier}`} style={{ '--mp-color': p.color }} onClick={() => onSelect(p)}>
-      <div className="mp-rank">
-        <span className="mp-rank-num">{r?.value}</span>
-        {r?.sub && <span className="mp-rank-sub">{r.sub}</span>}
-      </div>
-      <div className="mp-body">
-        <div className="mp-top">
-          <span className="mp-dot" />
-          <span className="mp-name">{p.courseName}</span>
-          {p.country && <img src={countryFlag(p.country)} alt="" className="mp-flag" onError={e => e.target.style.display = 'none'} />}
-          <RelBadge relevance={p.relevance} />
-        </div>
-        <div className="mp-mid">
-          <span className="mp-stat">{p.projectedTime}</span>
-          <span className="mp-sep">·</span>
-          <span className="mp-stat">{paceDisplay(p.projectedPaceSec)}</span>
-          <span className="mp-sep">·</span>
-          <span className={`mp-stat mp-diff ${diffCls}`}>{diffLabel}</span>
-          <span className="mp-sep">·</span>
-          <span className={`mp-stat ${faster ? 'green' : 'red'}`}>{faster ? `${pct.toFixed(1)}% faster` : `${pct.toFixed(1)}% slower`}</span>
-        </div>
-        {rank && (
-          <div className="mp-bot">
-            <span className="mp-winner">M {paceDisplay(rank.winnerTimeSec / p.distanceKm, true)}/km</span>
-            <span className="mp-winner">F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm, true)}/km</span>
-          </div>
-        )}
-      </div>
+    <button className="grid-row" style={{ '--row-color': p.color }} onClick={() => onSelect(p)}>
+      <span className="grid-cell course">
+        <span className="course-dot" />
+        <span className="course-name">{p.courseName}</span>
+        {p.country && <img src={countryFlag(p.country)} alt="" className="course-flag" onError={e => e.target.style.display = 'none'} />}
+      </span>
+      <span className="grid-cell dist">{p.distanceKm}<span className="unit">km</span></span>
+      <span className="grid-cell time">{p.projectedTime}</span>
+      <span className="grid-cell pace">{paceDisplay(p.projectedPaceSec)}</span>
+      <span className="grid-cell rank">
+        {rank && <span className="rank-badge" style={{ color: rc, borderColor: rc }}>{formatRank(rank)}</span>}
+      </span>
+      <span className="grid-cell relev"><RelBadge relevance={p.relevance} /></span>
+      <span className="grid-cell diff">
+        <span className={`diff-badge ${p.diffVsRun === 'More' ? 'hard' : p.diffVsRun === 'Less' ? 'easy' : 'moderate'}`}>
+          {p.diffVsRun === 'Less' ? `${p.diffVsRunPct.toFixed(0)}% easier` : p.diffVsRun === 'More' ? `${p.diffVsRunPct.toFixed(0)}% harder` : 'Similar'}
+        </span>
+      </span>
+      <span className={`grid-cell adj ${isFaster ? 'faster' : 'slower'}`}>
+        {isFaster ? `${pctDiff.toFixed(1)}% faster` : `${pctDiff.toFixed(1)}% slower`}
+      </span>
+      <span className="grid-cell winner">
+        {rank && <span className="winner-pace">M {paceDisplay(rank.winnerTimeSec / p.distanceKm, true)}/km &middot; F {paceDisplay(rank.winnerWomenTimeSec / p.distanceKm, true)}/km</span>}
+      </span>
     </button>
   );
 });
@@ -140,11 +131,25 @@ const MarathonGrid = memo(function MarathonGrid({ projections, onSelect }) {
       {sorted.length === 0 ? (
         <p className="text-muted" style={{ padding: '20px 0' }}>No courses in this category.</p>
       ) : (
-        <div className="mp-list">
-          {sorted.slice(0, 50).map(p => (
-            <CourseCard key={p.courseId} p={p} onSelect={onSelect} />
-          ))}
-        </div>
+        <>
+          <div className="grid-header">
+            <span className="grid-cell course">Course</span>
+            <span className="grid-cell dist">Distance</span>
+            <span className="grid-cell time">Projected</span>
+            <span className="grid-cell pace">Pace</span>
+            <span className="grid-cell rank">Your Rank</span>
+            <span className="grid-cell relev">Relevance</span>
+            <span className="grid-cell diff">Difficulty</span>
+            <span className="grid-cell adj">vs Pace</span>
+            <span className="grid-cell winner">Winners</span>
+          </div>
+
+          <div className="grid-body">
+            {sorted.slice(0, 50).map(p => (
+              <GridRow key={p.courseId} p={p} onSelect={onSelect} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

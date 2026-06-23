@@ -550,96 +550,100 @@ body {
   background: rgba(252, 76, 2, 0.15);
 }
 
-.mp-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* Grid Layout */
+.grid-header {
+  display: grid;
+  grid-template-columns: 2.5fr 0.7fr 1fr 0.9fr 1.1fr 0.9fr 0.7fr 0.8fr 1.4fr;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border);
+  align-items: center;
 }
 
-.mp-card {
+.grid-body {
   display: flex;
+  flex-direction: column;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 2.5fr 0.7fr 1fr 0.9fr 1.1fr 0.9fr 0.7fr 0.8fr 1.4fr;
+  gap: 8px;
+  padding: 11px 14px;
+  font-size: 13px;
   align-items: center;
-  gap: 0;
-  width: 100%;
-  padding: 12px 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid var(--row-color, transparent);
+  border-bottom: 1px solid var(--border);
   color: var(--text);
   font-family: inherit;
-  font-size: inherit;
-  text-align: left;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  transition: background 0.12s;
+  width: 100%;
 }
 
-.mp-card:hover {
-  background: var(--bg);
-  border-color: var(--accent-color, var(--border));
+.grid-row:last-child {
+  border-bottom: none;
 }
 
-.mp-card.elite { border-left: 3px solid #27ae60; }
-.mp-card.great { border-left: 3px solid #2ecc71; }
-.mp-card.good  { border-left: 3px solid var(--accent); }
-
-.mp-rank {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 72px;
-  flex-shrink: 0;
-  gap: 1px;
+.grid-row:hover {
+  background: var(--bg-elevated);
 }
 
-.mp-rank-num {
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.3px;
+.grid-row:nth-child(even) {
+  background: rgba(128, 128, 128, 0.03);
 }
 
-.mp-card.elite .mp-rank-num { color: #27ae60; }
-.mp-card.great .mp-rank-num { color: #2ecc71; }
-.mp-card.good  .mp-rank-num { color: var(--accent); }
-
-.mp-rank-sub {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--text-muted);
-  line-height: 1;
+.grid-row:nth-child(even):hover {
+  background: var(--bg-elevated);
 }
 
-.mp-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.mp-top {
+.grid-cell {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
 }
 
-.mp-dot {
+.grid-cell.course {
+  font-weight: 600;
+  gap: 8px;
+}
+
+.grid-cell.adj.faster {
+  color: var(--positive);
+}
+
+.grid-cell.adj.slower {
+  color: var(--negative);
+}
+
+.course-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--mp-color, var(--accent));
+  background: var(--row-color, var(--accent));
   flex-shrink: 0;
 }
 
-.mp-name {
-  font-weight: 700;
-  font-size: 15px;
-  line-height: 1.2;
-  letter-spacing: -0.1px;
+.course-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mp-flag {
+.course-flag {
   width: 18px;
   height: 12px;
   border-radius: 2px;
@@ -647,69 +651,75 @@ body {
   flex-shrink: 0;
 }
 
-.mp-mid {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.mp-sep {
-  color: var(--border);
-  font-weight: 300;
-}
-
-.mp-stat {
-  line-height: 1.2;
-}
-
-.mp-stat.green { color: var(--positive); }
-.mp-stat.red   { color: var(--negative); }
-
-.mp-diff.hard  { color: var(--negative); }
-.mp-diff.easy  { color: var(--positive); }
-
-.mp-bot {
-  display: flex;
-  gap: 12px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.mp-winner {
-  line-height: 1.2;
-}
-
-/* Relevance Badges */
-.mp-rel {
+.grid-cell .unit {
   font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.rank-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(252, 76, 2, 0.06);
+  border: 1px solid;
+  padding: 1px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  line-height: 1.4;
 }
 
-.mp-rel.rel-high {
+.diff-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.diff-badge.easy {
   background: rgba(34, 197, 94, 0.1);
   color: var(--positive);
 }
 
-.mp-rel.rel-medium {
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-}
-
-.mp-rel.rel-low {
+.diff-badge.moderate {
   background: rgba(251, 191, 36, 0.1);
   color: #fbbf24;
 }
 
-.mp-rel.rel-estimate {
+.diff-badge.hard {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--negative);
+}
+
+.winner-pace {
+  font-size: 11px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* Relevance Badges */
+.rel-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.rel-badge.rel-high {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--positive);
+}
+
+.rel-badge.rel-medium {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+
+.rel-badge.rel-low {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+}
+
+.rel-badge.rel-estimate {
   background: rgba(239, 68, 68, 0.1);
   color: var(--negative);
 }
@@ -1733,21 +1743,18 @@ body {
   .detail-summary {
     grid-template-columns: 1fr;
   }
-  .mp-card {
-    padding: 10px 12px;
-  }
-  .mp-rank {
-    min-width: 60px;
-  }
-  .mp-rank-num {
-    font-size: 14px;
-  }
-  .mp-name {
-    font-size: 14px;
-  }
-  .mp-mid {
+  .grid-header,
+  .grid-row {
+    grid-template-columns: 2fr 0.6fr 0.9fr 0.8fr 1fr 0.8fr 0.6fr 0.7fr 1.2fr;
     font-size: 12px;
-    gap: 4px;
+    gap: 6px;
+    padding: 9px 10px;
+  }
+  .grid-cell.winner .winner-pace {
+    font-size: 10px;
+  }
+  .grid-cell.adj .diff-badge {
+    font-size: 10px;
   }
   .athlete-stats {
     flex-wrap: wrap;
@@ -1770,38 +1777,27 @@ body {
   .header-athlete {
     font-size: 12px;
   }
-  .mp-card {
-    padding: 10px 10px;
-    border-radius: 8px;
-    border-left-width: 2px;
+  .grid-header,
+  .grid-row {
+    grid-template-columns: 1.8fr 0.5fr 0.8fr 0.7fr 0.9fr 0.7fr 0.5fr 0.6fr 1fr;
+    font-size: 10px;
+    gap: 4px;
+    padding: 8px 8px;
   }
-  .mp-card.elite { border-left-width: 2px; }
-  .mp-card.great { border-left-width: 2px; }
-  .mp-card.good  { border-left-width: 2px; }
-  .mp-rank {
-    min-width: 52px;
+  .grid-cell .course-dot {
+    display: none;
   }
-  .mp-rank-num {
-    font-size: 14px;
+  .grid-cell .course-flag {
+    display: none;
   }
-  .mp-rank-sub {
+  .grid-cell.winner .winner-pace {
     font-size: 9px;
   }
-  .mp-name {
-    font-size: 13px;
+  .rel-badge {
+    font-size: 8px;
+    padding: 1px 4px;
   }
-  .mp-flag {
-    width: 16px;
-    height: 11px;
-  }
-  .mp-mid {
-    font-size: 11px;
-    gap: 3px;
-  }
-  .mp-bot {
-    font-size: 10px;
-  }
-  .mp-rel {
+  .diff-badge {
     font-size: 9px;
     padding: 1px 5px;
   }
