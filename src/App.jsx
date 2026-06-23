@@ -6,7 +6,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import './App.css';
 
-export default function App() {
+function AppContent() {
   const [token, setToken] = useState(null);
   const [athlete, setAthlete] = useState(null);
   const [config, setConfig] = useState(null);
@@ -60,46 +60,44 @@ export default function App() {
 
   if (loading || !config) {
     return (
-      <ThemeProvider>
-        <div className="app-loading">
-          <div className="spinner" />
-        </div>
-      </ThemeProvider>
+      <div className="app-loading">
+        <div className="spinner" />
+      </div>
     );
   }
 
   if (configError || !config.stravaClientId) {
     return (
-      <ThemeProvider>
-        <div className="login-page">
-          <div className="login-card setup-notice">
-            <h2>Backend Not Running</h2>
-            <p>Can't reach the backend server. Make sure it's running on port 3001.</p>
-            <p>Configure <code>server/.env</code> with your Strava credentials and run:</p>
-            <code>npm run start</code>
-          </div>
+      <div className="login-page">
+        <div className="login-card setup-notice">
+          <h2>Backend Not Running</h2>
+          <p>Can't reach the backend server. Make sure it's running on port 3001.</p>
+          <p>Configure <code>server/.env</code> with your Strava credentials and run:</p>
+          <code>npm run start</code>
         </div>
-      </ThemeProvider>
+      </div>
     );
   }
 
   if (!token) {
     const authUrl = getAuthUrl(config.stravaClientId, config.stravaRedirectUri);
-    return (
-      <ThemeProvider>
-        <Login authUrl={authUrl} />
-      </ThemeProvider>
-    );
+    return <Login authUrl={authUrl} />;
   }
 
   return (
+    <Dashboard
+      token={token}
+      athlete={athlete}
+      onLogout={handleLogout}
+      config={config}
+    />
+  );
+}
+
+export default function App() {
+  return (
     <ThemeProvider>
-      <Dashboard
-        token={token}
-        athlete={athlete}
-        onLogout={handleLogout}
-        config={config}
-      />
+      <AppContent />
     </ThemeProvider>
   );
 }
