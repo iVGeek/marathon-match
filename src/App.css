@@ -6,7 +6,8 @@
   padding: 0;
 }
 
-:root {
+:root,
+[data-theme="dark"] {
   --bg: #0f1117;
   --bg-card: #1a1d27;
   --bg-elevated: #222640;
@@ -21,7 +22,33 @@
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --accent-bg: rgba(252, 76, 2, 0.06);
   --transition: 0.2s ease;
+  --bg-login: radial-gradient(ellipse at center, #1a1d27 0%, #0f1117 70%);
+  --bg-select: #0f1117;
+  --tag-bg: #0f1117;
+}
+
+[data-theme="light"] {
+  --bg: #f5f5f7;
+  --bg-card: #ffffff;
+  --bg-elevated: #e8eaed;
+  --bg-tertiary: #e0e2e7;
+  --border: #d1d5db;
+  --text: #1a1d27;
+  --text-muted: #6b7280;
+  --accent: #e84500;
+  --accent-hover: #d03d00;
+  --positive: #16a34a;
+  --negative: #dc2626;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --accent-bg: rgba(232, 69, 0, 0.06);
+  --transition: 0.2s ease;
+  --bg-login: radial-gradient(ellipse at center, #e8eaed 0%, #f5f5f7 70%);
+  --bg-select: #ffffff;
+  --tag-bg: #f5f5f7;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -67,7 +94,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 24px;
-  background: radial-gradient(ellipse at center, #1a1d27 0%, #0f1117 70%);
+  background: var(--bg-login);
 }
 
 .login-card {
@@ -113,7 +140,7 @@ body {
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s;
+  transition: background var(--transition);
 }
 
 .strava-btn:hover {
@@ -124,6 +151,27 @@ body {
   color: var(--text-muted);
   font-size: 12px;
   margin-top: 20px;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 /* Dashboard */

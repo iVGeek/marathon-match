@@ -12,9 +12,10 @@ import TrainingPaces from './TrainingPaces';
 import PRTracker from './PRTracker';
 import { projectRun } from '../utils/projections';
 import { allCourses } from '../utils/marathonData';
+import { useTheme } from '../utils/theme';
 
 export default function Dashboard({ token, athlete, onLogout, config }) {
-  const [activities, setActivities] = useState([]);
+  const { theme, toggle: toggleTheme } = useTheme();
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [paceAnalysis, setPaceAnalysis] = useState(null);
   const [selectedProjection, setSelectedProjection] = useState(null);
@@ -189,9 +190,18 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
             </div>
           )}
         </div>
-        <button className="logout-btn" onClick={onLogout}>
-          Disconnect
-        </button>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+            {theme === 'dark' ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            )}
+          </button>
+          <button className="logout-btn" onClick={onLogout}>
+            Disconnect
+          </button>
+        </div>
       </header>
 
       {selectedProjection ? (
