@@ -39,9 +39,15 @@ const CourseCard = memo(function CourseCard({ p, onSelect }) {
   const diffLabel = p.diffVsRun === 'Less' ? `${p.diffVsRunPct.toFixed(0)}% easier`
     : p.diffVsRun === 'More' ? `${p.diffVsRunPct.toFixed(0)}% harder` : 'Similar difficulty';
 
+  const rankStyles = {
+    '--accent-color': p.color,
+    '--rank-color': rc,
+    '--rank-bg': rank && rank.topPct <= 10 ? `${rc}15` : 'transparent',
+  };
+
   return (
-    <button className="course-card" style={{ '--accent-color': p.color }} onClick={() => onSelect(p)}>
-      <div className="cc-rank" style={{ color: rc }}>
+    <button className="course-card" style={rankStyles} onClick={() => onSelect(p)}>
+      <div className="cc-rank">
         <span className="cc-rank-val">{r?.value}</span>
         <span className="cc-rank-sub">{r?.sub}</span>
       </div>
@@ -53,15 +59,15 @@ const CourseCard = memo(function CourseCard({ p, onSelect }) {
           <RelBadge relevance={p.relevance} />
         </div>
         <div className="cc-stats">
-          <div className="cc-stat">
+          <div className="cc-stat cc-time">
             <span className="cc-stat-val">{p.projectedTime}</span>
             <span className="cc-stat-lbl">time</span>
           </div>
-          <div className="cc-stat">
+          <div className="cc-stat cc-time">
             <span className="cc-stat-val">{paceDisplay(p.projectedPaceSec)}</span>
             <span className="cc-stat-lbl">pace</span>
           </div>
-          <div className="cc-stat">
+          <div className="cc-stat cc-diff">
             <span className={`cc-stat-val ${p.diffVsRun === 'More' ? 'cc-hard' : p.diffVsRun === 'Less' ? 'cc-easy' : ''}`}>{diffLabel}</span>
             <span className="cc-stat-lbl">{faster ? `${pct.toFixed(1)}% ahead` : `${pct.toFixed(1)}% behind`}</span>
           </div>
