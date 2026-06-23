@@ -16,6 +16,7 @@ import { useTheme } from '../utils/theme';
 
 export default function Dashboard({ token, athlete, onLogout, config }) {
   const { theme, toggle: toggleTheme } = useTheme();
+  const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [paceAnalysis, setPaceAnalysis] = useState(null);
   const [selectedProjection, setSelectedProjection] = useState(null);

@@ -12,6 +12,7 @@ function AppContent() {
   const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [configError, setConfigError] = useState(null);
+  const [initError, setInitError] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -20,34 +21,46 @@ function AppContent() {
         setConfig(cfg);
       } catch (err) {
         setConfigError(err.message);
+        setLoading(false);
       }
     })();
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
-    const expiresAt = params.get('expires_at');
-    const athleteData = params.get('athlete');
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      const expiresAt = params.get('expires_at');
+      const athleteData = params.get('athlete');
 
-    if (accessToken && refreshToken && expiresAt) {
-      const data = {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-        expires_at: parseInt(expiresAt),
-        athlete: athleteData ? JSON.parse(athleteData) : null,
-      };
-      storeToken(data);
-      window.history.replaceState({}, '', '/');
-      setToken(data);
-      setAthlete(data.athlete);
-    } else {
-      const stored = getStoredToken();
-      if (stored) {
-        setToken(stored);
-        setAthlete(stored.athlete);
+      if (accessToken && refreshToken && expiresAt) {
+        let parsedAthlete = null;
+        try {
+          parsedAthlete = athleteData ? JSON.parse(athleteData) : null;
+        } catch {
+          console.warn('Failed to parse athlete data from URL');
+        }
+        const data = {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_at: parseInt(expiresAt),
+          athlete: parsedAthlete,
+        };
+        storeToken(data);
+        window.history.replaceState({}, '', '/');
+        setToken(data);
+        setAthlete(parsedAthlete);
+      } else {
+        const stored = getStoredToken();
+        if (stored) {
+          setToken(stored);
+          setAthlete(stored.athlete);
+        }
       }
+    } catch (err) {
+      console.error('Init error:', err);
+      setInitError(err.message);
     }
     setLoading(false);
   }, []);
@@ -58,15 +71,21 @@ function AppContent() {
     setAthlete(null);
   }, []);
 
-  if (loading || !config) {
+  if (initError) {
     return (
-      <div className="app-loading">
-        <div className="spinner" />
+      <div className="login-page">
+        <div className="login-card setup-notice">
+          <h2>Something went wrong</h2>
+          <p>{initError}</p>
+          <button className="strava-btn" style={{ marginTop: 16 }} onClick={() => window.location.reload()}>
+            Reload
+          </button>
+        </div>
       </div>
     );
   }
 
-  if (configError || !config.stravaClientId) {
+  if (configError || (config && !config.stravaClientId)) {
     return (
       <div className="login-page">
         <div className="login-card setup-notice">
@@ -75,6 +94,14 @@ function AppContent() {
           <p>Configure <code>server/.env</code> with your Strava credentials and run:</p>
           <code>npm run start</code>
         </div>
+      </div>
+    );
+  }
+
+  if (!config) {
+    return (
+      <div className="app-loading">
+        <div className="spinner" />
       </div>
     );
   }
