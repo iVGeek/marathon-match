@@ -12,9 +12,18 @@ import TrainingPaces from './TrainingPaces';
 import PRTracker from './PRTracker';
 import { projectRun } from '../utils/projections';
 import { allCourses } from '../utils/marathonData';
+import Tutorial from './Tutorial';
 import { useTheme } from '../utils/theme';
 
 export default function Dashboard({ token, athlete, onLogout, config }) {
+  const [showTutorial, setShowTutorial] = useState(() => {
+    return !localStorage.getItem('marathon_match_tutorial_seen');
+  });
+
+  const dismissTutorial = () => {
+    localStorage.setItem('marathon_match_tutorial_seen', '1');
+    setShowTutorial(false);
+  };
   const { theme, toggle: toggleTheme } = useTheme();
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState(null);
@@ -166,6 +175,8 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
   }
 
   return (
+    <>
+      {showTutorial && <Tutorial onDismiss={dismissTutorial} />}
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-left">
@@ -276,5 +287,6 @@ export default function Dashboard({ token, athlete, onLogout, config }) {
         </>
       )}
     </div>
+    </>
   );
 }
