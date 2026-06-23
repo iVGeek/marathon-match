@@ -1786,6 +1786,8 @@ body {
 @media (max-width: 640px) {
   .dashboard {
     padding: 10px;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   .dashboard-header {
     flex-direction: column;
@@ -1826,6 +1828,8 @@ body {
     padding: 16px;
     margin-bottom: 16px;
     border-radius: 10px;
+    max-width: 100%;
+    overflow: hidden;
   }
   .section-header {
     gap: 8px;
@@ -1852,24 +1856,26 @@ body {
   }
 
   /* Grid - stacked card layout */
+  .grid-wrap { max-width: 100%; overflow: hidden; }
   .grid-hd { display: none; }
 
   .grid-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px 8px;
-    padding: 12px 10px;
+    gap: 3px 6px;
+    padding: 10px 8px;
     border-left-width: 3px;
-    min-height: 64px;
+    min-height: 60px;
     animation: none;
   }
 
   .grid-row .gc {
-    overflow: visible;
+    overflow: hidden;
     white-space: nowrap;
-    text-overflow: clip;
-    flex: initial;
+    text-overflow: ellipsis;
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   .grid-row .gc.course {
@@ -1877,37 +1883,44 @@ body {
     font-size: 14px;
     font-weight: 700;
     gap: 6px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
+    overflow: hidden;
+  }
+  .course-name { 
+    font-size: clamp(12px, 4vw, 14px); 
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .grid-row .gc.course .course-meta { display: none; }
   .grid-row .gc .course-dot { display: none; }
   .grid-row .gc .course-flag { display: none; }
-  .course-name { font-size: 14px; }
 
-  .grid-row .gc.rank { margin-left: auto; }
-  .rank-badge { font-size: 10px; padding: 2px 8px; }
+  .grid-row .gc.rank { margin-left: auto; flex-shrink: 0; }
+  .rank-badge { font-size: clamp(9px, 3vw, 10px); padding: 2px 8px; }
 
   .grid-row .gc.dist { display: none; }
 
-  .grid-row .gc.time { font-size: 12px; font-weight: 600; }
-  .grid-row .gc.pace { font-size: 12px; font-weight: 500; }
+  .grid-row .gc.time { font-size: clamp(11px, 3.5vw, 12px); font-weight: 600; }
+  .grid-row .gc.pace { font-size: clamp(11px, 3.5vw, 12px); font-weight: 500; }
 
-  .grid-row .gc.diff { margin-left: auto; }
-  .diff-badge { font-size: 10px; padding: 1px 6px; }
+  .grid-row .gc.diff { margin-left: auto; flex-shrink: 0; }
+  .diff-badge { font-size: clamp(9px, 3vw, 10px); padding: 1px 6px; }
   .diff-lbl { display: none; }
   .diff-val { font-weight: 700; }
 
-  .grid-row .gc.adj { font-size: 11px; }
+  .grid-row .gc.adj { font-size: clamp(10px, 3.2vw, 11px); }
 
   .grid-row .gc.winner {
     width: 100%;
     justify-content: flex-start;
-    font-size: 10px;
+    font-size: clamp(9px, 3vw, 10px);
     margin-top: 2px;
-    padding-top: 4px;
+    padding-top: 3px;
     border-top: 1px solid var(--border);
+    flex-shrink: 0;
   }
-  .grid-row .gc.winner .winner-pace { font-size: 10px; gap: 4px; }
+  .grid-row .gc.winner .winner-pace { font-size: clamp(9px, 3vw, 10px); gap: 3px; }
   .winner-vr { opacity: 0.3; }
 
   /* Activity selector */
@@ -2090,6 +2103,29 @@ body {
   .split-label {
     font-size: 11px;
   }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .dashboard { padding: 6px; }
+  .section { padding: 12px; border-radius: 8px; }
+  .section-title { font-size: 14px; }
+  .header-title { font-size: 17px; }
+  .grid-row { padding: 8px 6px; min-height: 54px; gap: 2px 4px; }
+  .grid-row .gc.course { font-size: 13px; }
+  .grid-row .gc.time { font-size: 10px; }
+  .grid-row .gc.pace { font-size: 10px; }
+  .grid-row .gc.adj { font-size: 10px; }
+  .rank-badge { font-size: 8px; padding: 1px 6px; }
+  .diff-badge { font-size: 8px; padding: 1px 4px; }
+  .grid-row .gc.winner { font-size: 8px; padding-top: 2px; }
+  .grid-row .gc.winner .winner-pace { font-size: 8px; }
+  .winner-sex { width: 13px; height: 13px; font-size: 7px; }
+  .activity-card { padding: 8px 10px; }
+  .activity-name { font-size: 12px; }
+  .detail-title { font-size: 16px; }
+  .summary-value { font-size: 16px; }
+  .equiv-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
 }
 
 /* Tutorial */
